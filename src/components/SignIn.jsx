@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { auth } from "../frontend/firebase/firebase"; 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link } from 'react-router-dom';
+import { UserContext } from '../UserContext';
 
 function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const {setUser} = useContext(UserContext)
 
   const handleLogin = (e) => {
     e.preventDefault(); 
@@ -15,6 +17,11 @@ function SignIn() {
         // Successfully logged in
         const user = userCredential.user;
         console.log("User logged in:", user);
+        setUser({
+          displayName: user.displayName,
+          email: user.email,
+          uid: user.uid,
+        });
         setError(''); // Clear any previous errors
       })
       .catch((error) => {
