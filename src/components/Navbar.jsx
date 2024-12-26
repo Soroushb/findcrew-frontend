@@ -4,6 +4,10 @@ import { UserContext } from '../UserContext';
 
 const Navbar = () => {
   const { user } = useContext(UserContext);
+  
+  const handleLogout = () => {
+    localStorage.clear(); 
+  }
 
   return (
     <div className='flex flex-row justify-between bg-yellow-400 p-9'>
@@ -32,11 +36,17 @@ const Navbar = () => {
             </Link>
           </>
         ) : (
+          <div className='flex flex-row'>
+          <div onClick={() => handleLogout()} className='text-white bg-black text-lg rounded-md w-full h-12 mr-10 px-4 pt-2 hover:cursor-pointer'>
+            Log out
+          </div>
           <Link to="/my-profile">
           <div className='text-white bg-black text-2xl rounded-full w-12 h-12 mr-10 p-2 hover:cursor-pointer'>
             {user?.displayName.charAt(0)}
           </div>
           </Link>
+
+          </div>
         )}
       </div>
     </div>

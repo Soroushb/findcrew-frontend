@@ -22,12 +22,12 @@ const MyProfile = () => {
     e.preventDefault();
 
     try {
-      let profilePicUrl = user?.photoURL;
+     // let profilePicUrl = user?.photoURL;
 
-      if (profilePic) {
-        // Call the function to upload the new profile picture and get the download URL
-        profilePicUrl = await updateUserProfile(profilePic);
-      }
+      // if (profilePic) {
+      //   // Call the function to upload the new profile picture and get the download URL
+      //   profilePicUrl = await updateUserProfile(profilePic);
+      // }
 
       // Update the user's profile (location, skills, etc.)
       const updatedUser = {
@@ -36,7 +36,7 @@ const MyProfile = () => {
         location,
         skills,
         bio,
-        photoURL: profilePicUrl, // Add the new profile picture URL
+        //photoURL: profilePicUrl, // Add the new profile picture URL
       };
       setUser(updatedUser);
 
