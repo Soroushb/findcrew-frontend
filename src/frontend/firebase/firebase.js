@@ -1,8 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, updateProfile } from "firebase/auth";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore"; 
 
-// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDggTbal1jxN9hwwKS3Ogg1FxvDZeyLh04",
   authDomain: "crewfind-64348.firebaseapp.com",
@@ -13,35 +12,45 @@ const firebaseConfig = {
   measurementId: "G-G4W31T1ZFN",
 };
 
-// Initialize Firebase
+// Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 
-// Get Firebase Authentication and Storage instances
+// Initialize Firebase services
 const auth = getAuth(app);
-const storage = getStorage(app);
+const db = getFirestore(app);
 
-// Function to upload profile picture to Firebase Storage
-const uploadProfilePic = (file) => {
-  const storageRef = ref(storage, `profile_pics/${file.name}`); // Reference to the storage location
-  return uploadBytes(storageRef, file)  // Upload the file to Firebase Storage
-    .then((snapshot) => {
-      return getDownloadURL(snapshot.ref); // Get the download URL for the uploaded file
-    })
-    .catch((error) => {
-      console.error("Error uploading file: ", error);
-      throw error; // Propagate the error if upload fails
-    });
-};
-
-// Function to update the user's profile (including photo URL)
-const updateUserProfile = async (file) => {
+const getUserInfo = async (uid) => {
   try {
-    const downloadURL = await uploadProfilePic(file);  // Upload the file and get the download URL
-    await updateProfile(auth.currentUser, { photoURL: downloadURL }); // Update the user's profile with the new photo URL
-    console.log("Profile updated with new photo URL");
+    const userRef = doc(db, "users", uid);  // Correct reference to the user document
+    const userSnapshot = await getDoc(userRef);  // Fetch the user data
+    
+    if (userSnapshot.exists()) {
+      return userSnapshot.data();  // Return user data if document exists
+    } else {
+      console.log("No such document!");
+      return null;
+    }
   } catch (error) {
-    console.error("Error updating profile: ", error);
+    console.error("Error getting user info:", error);
+    return null;
   }
 };
 
-export { auth, storage, updateUserProfile }; // Export for use in other components
+const updateUserInfo = async (uid, updatedData) => {
+  try {
+    // Ensure the user is authenticated
+    if (!uid) {
+      throw new Error("User is not authenticated");
+    }
+
+    const userRef = doc(db, "users", uid); // Correct reference to the user document
+
+    await setDoc(userRef, updatedData, { merge: true });
+    console.log("User information updated successfully.");
+  } catch (error) {
+    console.error("Error updating user info:", error);
+  }
+};
+
+// Export Firebase services and functions
+export { auth, getUserInfo, updateUserInfo };

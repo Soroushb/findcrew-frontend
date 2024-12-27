@@ -1,6 +1,7 @@
 import React, {useContext} from 'react'
 import images from '../constants/images'
 import { UserContext } from '../UserContext'
+import {Link} from 'react-router-dom'
 
 const Home = () => {
 
@@ -19,7 +20,9 @@ const Home = () => {
         <div className='bg-black p-2 rounded-lg hover:cursor-pointer text-white'>Go to Dashboard</div>
         </>) :
          (<>
+         <Link to="/signup">
         <div className='bg-black p-2 rounded-lg hover:cursor-pointer text-white'>Create Account</div>
+        </Link>
          </>)}
 
         </div>

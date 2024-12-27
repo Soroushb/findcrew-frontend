@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../UserContext';
+import LogoutButton from './LogoutButton';
 
 const Navbar = () => {
   const { user } = useContext(UserContext);
@@ -37,12 +38,13 @@ const Navbar = () => {
           </>
         ) : (
           <div className='flex flex-row'>
-          <div onClick={() => handleLogout()} className='text-white bg-black text-lg rounded-md w-full h-12 mr-10 px-4 pt-2 hover:cursor-pointer'>
-            Log out
+          <div className='p-2'>
+          <LogoutButton/>
           </div>
           <Link to="/my-profile">
           <div className='text-white bg-black text-2xl rounded-full w-12 h-12 mr-10 p-2 hover:cursor-pointer'>
             {user?.displayName.charAt(0)}
+            
           </div>
           </Link>
 
