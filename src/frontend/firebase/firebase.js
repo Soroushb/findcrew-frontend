@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore"; 
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore"; 
 
 const firebaseConfig = {
   apiKey: "AIzaSyDggTbal1jxN9hwwKS3Ogg1FxvDZeyLh04",
@@ -16,16 +16,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase services
-const auth = getAuth(app);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
 
 const getUserInfo = async (uid) => {
   try {
-    const userRef = doc(db, "users", uid);  // Correct reference to the user document
-    const userSnapshot = await getDoc(userRef);  // Fetch the user data
+    const userRef = doc(db, "users", uid);  
+    const userSnapshot = await getDoc(userRef);  
     
     if (userSnapshot.exists()) {
-      return userSnapshot.data();  // Return user data if document exists
+      return userSnapshot.data(); 
     } else {
       console.log("No such document!");
       return null;
@@ -36,14 +37,31 @@ const getUserInfo = async (uid) => {
   }
 };
 
+const getUsers = async (location) => {
+  try {
+    const usersRef = collection(db, "users");
+
+    const q = query(usersRef, where("location", "==", location));
+
+    const querySnapshot = await getDocs(q);
+
+    const users = querySnapshot.docs.map((doc) => doc.data());
+
+    return users;
+  } catch (err) {
+    console.error("Error getting users:", err.message);
+    throw err;
+  }
+};
+
+
 const updateUserInfo = async (uid, updatedData) => {
   try {
-    // Ensure the user is authenticated
     if (!uid) {
       throw new Error("User is not authenticated");
     }
 
-    const userRef = doc(db, "users", uid); // Correct reference to the user document
+    const userRef = doc(db, "users", uid); 
 
     await setDoc(userRef, updatedData, { merge: true });
     console.log("User information updated successfully.");
@@ -52,5 +70,4 @@ const updateUserInfo = async (uid, updatedData) => {
   }
 };
 
-// Export Firebase services and functions
-export { auth, getUserInfo, updateUserInfo };
+export { auth, getUserInfo, updateUserInfo, getUsers };

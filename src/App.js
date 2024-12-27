@@ -1,10 +1,10 @@
 import './App.css';
-import { useContext } from 'react';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AboutUs from './components/AboutUs';
+import Search from './components/Search';
 import { UserContext } from './UserContext'; // Import the context
 import { UserProvider } from './UserContext'; 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -26,8 +26,10 @@ function App() {
                     <Route exact path="/" element={<Home />} />
                       <Route exact path="/signup" element={<SignUp />} />
                       <Route exact path="/signin" element={<SignIn />} />
+                      <Route exact path="/search" element={<Search />} />
                       <Route exact path="/about-us" element={<AboutUs />} />
                       <Route exact path="/my-profile" element={<MyProfile />} />
+                      
                     </Routes>
                   </div>
                 </div>
