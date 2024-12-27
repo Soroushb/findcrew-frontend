@@ -13,6 +13,7 @@ const Search = () => {
     try {
       const users = await getUsers(filter);  
       setResults(users);  
+      console.log(results)
      
     } catch (err) {
       console.error("Error getting users:", err.message);
@@ -37,7 +38,7 @@ const Search = () => {
           <ul>
             {results.map((user, index) => (
               <li key={index}>
-                {user.location} - {user.skills} 
+                {user.location} - {user.skills}  - {user.displayName}
               </li>
             ))}
           </ul>

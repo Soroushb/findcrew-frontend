@@ -9,6 +9,7 @@ const MyProfile = () => {
   const [bio, setBio] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  console.log(user)
 
   // Fetch user info on component mount
   useEffect(() => {
@@ -33,7 +34,8 @@ const MyProfile = () => {
     const updatedUser = {
       location,
       skills,
-      bio,
+      bio, 
+      
     };
 
     await updateUserInfo(user?.uid, updatedUser);
@@ -44,6 +46,8 @@ const MyProfile = () => {
       location,
       skills,
       bio,
+    
+
     }));
 
     setSuccess(true);
@@ -64,7 +68,7 @@ const MyProfile = () => {
             type="text"
             placeholder="Location"
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(e) => {setLocation(e.target.value);}}
           />
           <label className="pl-2">Skills</label>
           <input

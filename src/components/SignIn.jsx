@@ -3,6 +3,7 @@ import { auth } from "../frontend/firebase/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link } from 'react-router-dom';
 import { UserContext } from '../UserContext';
+import { updateDisplayName } from '../frontend/firebase/firebase';
 
 function SignIn() {
   const [email, setEmail] = useState('');
@@ -12,6 +13,7 @@ function SignIn() {
 
   const handleLogin = (e) => {
     e.preventDefault(); 
+    updateDisplayName()
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Successfully logged in

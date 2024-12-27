@@ -63,11 +63,31 @@ const updateUserInfo = async (uid, updatedData) => {
 
     const userRef = doc(db, "users", uid); 
 
-    await setDoc(userRef, updatedData, { merge: true });
+    await setDoc(userRef, {updatedData}, { merge: true });
     console.log("User information updated successfully.");
   } catch (error) {
     console.error("Error updating user info:", error);
   }
 };
 
-export { auth, getUserInfo, updateUserInfo, getUsers };
+const updateDisplayName = async () => {
+  const user = auth.currentUser;
+
+  if (user) {
+    try {
+      const userRef = doc(db, "users", user.uid); // Reference to user document
+
+      await setDoc(userRef, {
+        displayName: user.displayName || "Anonymous", 
+      }, { merge: true }); 
+
+      console.log("User display name updated successfully.");
+    } catch (error) {
+      console.error("Error updating display name:", error);
+    }
+  } else {
+    console.log("No authenticated user found.");
+  }
+};
+
+export { auth, getUserInfo, updateDisplayName, updateUserInfo, getUsers };
