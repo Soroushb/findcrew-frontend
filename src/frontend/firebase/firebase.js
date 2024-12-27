@@ -41,11 +41,20 @@ const getUsers = async (location) => {
   try {
     const usersRef = collection(db, "users");
 
-    const q = query(usersRef, where("location", "==", location));
+    // Convert the search input to lowercase
+    const lowercasedLocation = location.toLowerCase();
+
+    const q = query(usersRef, where("updatedData.location", "==", lowercasedLocation));
 
     const querySnapshot = await getDocs(q);
 
-    const users = querySnapshot.docs.map((doc) => doc.data());
+    const users = querySnapshot.docs.map((doc) => {
+      const userData = doc.data();
+      return {
+        ...userData,
+        ...userData.updatedData,
+      };
+    });
 
     return users;
   } catch (err) {
@@ -61,9 +70,15 @@ const updateUserInfo = async (uid, updatedData) => {
       throw new Error("User is not authenticated");
     }
 
-    const userRef = doc(db, "users", uid); 
+    const userRef = doc(db, "users", uid);
 
-    await setDoc(userRef, {updatedData}, { merge: true });
+    // Convert the location to lowercase before saving
+    const lowercasedData = {
+      ...updatedData,
+      location: updatedData.location.toLowerCase(),
+    };
+
+    await setDoc(userRef, { updatedData: lowercasedData }, { merge: true });
     console.log("User information updated successfully.");
   } catch (error) {
     console.error("Error updating user info:", error);
