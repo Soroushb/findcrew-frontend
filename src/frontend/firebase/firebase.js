@@ -48,13 +48,11 @@ const getUsers = async (location) => {
 
     const querySnapshot = await getDocs(q);
 
-    const users = querySnapshot.docs.map((doc) => {
-      const userData = doc.data();
-      return {
-        ...userData,
-        ...userData.updatedData,
-      };
-    });
+    const users = querySnapshot.docs.map((doc) => ({
+      uid: doc.id, 
+      ...doc.data(), 
+      ...doc.data().updatedData, 
+    }));
 
     return users;
   } catch (err) {

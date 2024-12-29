@@ -2,11 +2,13 @@ import React, { useState, useContext } from 'react';
 import { UserContext } from '../UserContext';
 import { getUsers } from '../frontend/firebase/firebase';
 import images from '../constants/images';
+import { useNavigate } from 'react-router-dom';
 
 const Search = () => {
   const { user, setUser } = useContext(UserContext);
   const [filter, setFilter] = useState("");  
   const [results, setResults] = useState([]);  
+  const navigate = useNavigate()
 
   const handleFilter = async (e) => {
     e.preventDefault();
@@ -36,19 +38,19 @@ const Search = () => {
         <button type="submit">Search</button>
       </form>
 
-      <div>
+      <div className='flex items-center justify-center'>
     
         {results.length > 0 ? (
-          <div className='flex items-center justify-center p-10'>
+          <div className='grid grid-cols-3 w-2/3 items-center justify-center p-10'>
             {results.map((user, index) => (
-              <div className='m-2 p-2 flex flex-col bg-yellow-400 rounded-lg' key={index}>
-                <div><img src={images?.profile} alt='profile-pic'/></div>
-                <div className='flex items-start flex-col'>
+              <div onClick={() => navigate(`/profile/${user?.uid}`)} className='m-2 p-2 flex flex-col bg-yellow-400 rounded-lg' key={index}>
+                <div className='flex justify-center'><img className='rounded-lg' src={images?.profile} alt='profile-pic'/></div>
+                <div className='flex items-center flex-col'>
                 <p>{user.displayName}</p>
                 <p>{user.updatedData.location}</p>
                 <p>{user.updatedData.skills}</p> 
                 </div>
-              </div>
+              </div> 
             ))}
           </div>
         ) : (
