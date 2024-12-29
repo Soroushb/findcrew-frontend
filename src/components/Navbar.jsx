@@ -2,13 +2,12 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../UserContext';
 import LogoutButton from './LogoutButton';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const { user } = useContext(UserContext);
-  
-  const handleLogout = () => {
-    localStorage.clear(); 
-  }
+  const navigate = useNavigate()
+
 
   return (
     <div className='flex flex-row justify-between bg-yellow-400 p-9'>
@@ -43,12 +42,12 @@ const Navbar = () => {
           <div className='p-2'>
           <LogoutButton/>
           </div>
-          <Link to="/my-profile">
-          <div className='text-white bg-black text-2xl rounded-full w-12 h-12 mr-10 p-2 hover:cursor-pointer'>
+          
+          <div onClick={() => navigate(`profile/${user.uid}`)} className='text-white bg-black text-2xl rounded-full w-12 h-12 mr-10 p-2 hover:cursor-pointer'>
             {user?.displayName.charAt(0)}
             
           </div>
-          </Link>
+          
 
           </div>
         )}

@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../UserContext';
 import { updateUserInfo, getUserInfo } from '../frontend/firebase/firebase';
 import images from '../constants/images';
+import { useParams } from 'react-router-dom';
 
 const MyProfile = () => {
   const { user, setUser } = useContext(UserContext);
@@ -13,25 +14,32 @@ const MyProfile = () => {
   const [success, setSuccess] = useState(false);
   const [name, setName] = useState("")
   const [editMode, setEditMode] = useState(false)
-  console.log(user)
-
+  const [selfProfile, setSelfProfile] = useState(false);
+  const {id} = useParams()
+  console.log(`${id} and ${user?.uid}`)
+  
+  const fetchUserInfo = async () => {
+    const userData = await getUserInfo(id);
+    if (userData) {
+      setLocation(userData.updatedData.location);
+      setSkills(userData.updatedData.skills);
+      setBio(userData.updatedData.bio);
+      setName(userData.displayName)
+      setRole(userData.updatedData.role)
+  }}
   // Fetch user info on component mount
   useEffect(() => {
-    if (user?.uid) {
-      const fetchUserInfo = async () => {
-        const userData = await getUserInfo(user.uid);
-        if (userData) {
-          setLocation(userData.updatedData.location);
-          setSkills(userData.updatedData.skills);
-          setBio(userData.updatedData.bio);
-          setName(userData.displayName)
-          setRole(userData.updatedData.role)
-        }
-      };
-
-      fetchUserInfo();
+    // Check if the current user matches the profile being viewed
+    if (id && user?.uid) {
+      setSelfProfile(id === user?.uid);
+    } else {
+      setSelfProfile(false);
     }
-  }, [user]);
+    
+    console.log("Self Profile:", id === user?.uid);
+    fetchUserInfo();
+  }, [id, user]); // Add `id` as a dependency
+  
 
   const handleSubmit = async (e) => {
   e.preventDefault();
@@ -71,15 +79,22 @@ const MyProfile = () => {
         <div className='flex flex-col'>
         <div className='flex w-screen p-20 justify-between'>
         <h1 className='text-2xl font-semibold px-14'>My Profile</h1>
-        <div className='flex'>
-        <div onClick={() => setEditMode(true)} className='bg-black hover:scale-110  hover:cursor-pointer text-white p-2 h-full rounded-lg'>Edit Profile</div>
+        {selfProfile ? (
+          <div className='flex'>
+          <div onClick={() => setEditMode(true)} className='bg-black hover:scale-110  hover:cursor-pointer text-white p-2 h-full rounded-lg'>Edit Profile</div>
+          </div>
+        ):(
+          <div className='flex'>
+          <div  className='bg-black hover:scale-110  hover:cursor-pointer text-white p-2 h-full rounded-lg'>Connect</div>
+          </div>
+        )}
+        
         </div>
-        </div>
-        <div className='flex p-10 mx-20 justify-between w-1/2'>
+        <div className='flex p-10 mx-20 justify-between w-full'>
         <img src={images?.profile} alt="profile-pic"/>
-        <div>
+        <div className='w-2/3 mr-10'>
         <h1 className='text-2xl font-semibold'>Bio:</h1>
-        <h2>{bio}</h2>
+        <h2>{bio.substring(0,250)}...</h2>
         </div>
         </div>
         <div className='flex flex-col justify-start items-start px-20 py-10'>

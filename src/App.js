@@ -36,7 +36,7 @@ function App() {
             )}
           </UserContext.Consumer>
         </div>
-        <Footer />
+        <Footer  />
       </Router>
     </UserProvider>
   );

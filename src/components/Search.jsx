@@ -43,7 +43,7 @@ const Search = () => {
         {results.length > 0 ? (
           <div className='grid grid-cols-3 w-2/3 items-center justify-center p-10'>
             {results.map((user, index) => (
-              <div onClick={() => navigate(`/profile/${user?.uid}`)} className='m-2 p-2 flex flex-col bg-yellow-400 rounded-lg' key={index}>
+              <div onClick={() => {console.log(user?.uid); navigate(`/profile/${user?.uid}`)}} className='m-2 p-2 flex flex-col bg-yellow-400 rounded-lg' key={index}>
                 <div className='flex justify-center'><img className='rounded-lg' src={images?.profile} alt='profile-pic'/></div>
                 <div className='flex items-center flex-col'>
                 <p>{user.displayName}</p>
