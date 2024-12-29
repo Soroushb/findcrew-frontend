@@ -4,14 +4,16 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link } from 'react-router-dom';
 import { UserContext } from '../UserContext';
 import { updateDisplayName } from '../frontend/firebase/firebase';
+import { useNavigate } from 'react-router-dom';
 
 function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const {setUser} = useContext(UserContext)
+  const {setUser} = useContext(UserContext) 
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault(); 
     updateDisplayName()
     signInWithEmailAndPassword(auth, email, password)
@@ -24,13 +26,14 @@ function SignIn() {
           email: user.email,
           uid: user.uid,
         });
-        setError(''); // Clear any previous errors
+        setError(''); 
       })
       .catch((error) => {
         // Handle login errors
         setError(error.message); // Display error message
         console.error("Error logging in:", error.message);
       });
+      
   };
 
   return (

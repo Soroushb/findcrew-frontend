@@ -29,7 +29,6 @@ function App() {
                       <Route exact path="/search" element={<Search />} />
                       <Route exact path="/about-us" element={<AboutUs />} />
                       <Route exact path="/my-profile" element={<MyProfile />} />
-                      
                     </Routes>
                   </div>
                 </div>

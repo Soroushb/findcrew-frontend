@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { UserContext } from '../UserContext';
 import { getUsers } from '../frontend/firebase/firebase';
+import images from '../constants/images';
 
 const Search = () => {
   const { user, setUser } = useContext(UserContext);
@@ -38,13 +39,18 @@ const Search = () => {
       <div>
     
         {results.length > 0 ? (
-          <ul>
+          <div className='flex items-center justify-center p-10'>
             {results.map((user, index) => (
-              <li key={index}>
-                {user.updatedData.location} - {user.updatedData.skills}  - {user.displayName}
-              </li>
+              <div className='m-2 p-2 flex flex-col bg-yellow-400 rounded-lg' key={index}>
+                <div><img src={images?.profile} alt='profile-pic'/></div>
+                <div className='flex items-start flex-col'>
+                <p>{user.displayName}</p>
+                <p>{user.updatedData.location}</p>
+                <p>{user.updatedData.skills}</p> 
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
           <p>No users found for this location.</p>
         )}
