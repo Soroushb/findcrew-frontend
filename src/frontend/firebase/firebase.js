@@ -19,14 +19,16 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-
+// Function to fetch user info (including email)
 const getUserInfo = async (uid) => {
   try {
     const userRef = doc(db, "users", uid);  
     const userSnapshot = await getDoc(userRef);  
     
     if (userSnapshot.exists()) {
-      return userSnapshot.data(); 
+      const userData = userSnapshot.data();
+      const email = userData.email || "Email not available"; // Include email
+      return { ...userData, email }; 
     } else {
       console.log("No such document!");
       return null;
@@ -37,6 +39,7 @@ const getUserInfo = async (uid) => {
   }
 };
 
+// Function to get all users in a specific location
 const getUsers = async (location) => {
   try {
     const usersRef = collection(db, "users");
@@ -61,7 +64,7 @@ const getUsers = async (location) => {
   }
 };
 
-
+// Function to update user information
 const updateUserInfo = async (uid, updatedData) => {
   try {
     if (!uid) {
@@ -83,6 +86,7 @@ const updateUserInfo = async (uid, updatedData) => {
   }
 };
 
+// Function to update display name
 const updateDisplayName = async () => {
   const user = auth.currentUser;
 
@@ -103,4 +107,57 @@ const updateDisplayName = async () => {
   }
 };
 
-export { auth, getUserInfo, updateDisplayName, updateUserInfo, getUsers };
+// Function to send a connection request
+const sendConnectionRequest = async (senderUid, recipientUid) => {
+  try {
+    if (!senderUid || !recipientUid) {
+      throw new Error("Both sender and recipient UIDs are required");
+    }
+
+    const recipientRef = doc(db, "users", recipientUid);
+    const connectionRequestsRef = collection(recipientRef, "connectionRequests");
+
+    const requestData = {
+      senderUid,
+      timestamp: Date.now(), 
+    };
+
+    await setDoc(doc(connectionRequestsRef, senderUid), requestData);
+
+    console.log("Connection request sent successfully.");
+  } catch (error) {
+    console.error("Error sending connection request:", error);
+  }
+};
+
+// Function to fetch connection requests
+const fetchConnectionRequests = async (receiverUid) => {
+  try {
+    const connectionRequestsRef = collection(db, "users", receiverUid, "connectionRequests");
+    const querySnapshot = await getDocs(connectionRequestsRef);
+
+    const requests = await Promise.all(
+      querySnapshot.docs.map(async (doc) => {
+        const requestData = doc.data();
+
+        // Instead of fetching the display name, directly use the user's email
+        const senderEmail = requestData.senderUid
+          ? (await getUserInfo(requestData.senderUid)).email
+          : "Unknown User";
+
+        return {
+          ...requestData,
+          senderEmail, // Include sender's email
+        };
+      })
+    );
+
+    return requests;
+  } catch (err) {
+    console.error("Error fetching connection requests:", err);
+    throw err;
+  }
+};
+
+// Export the functions
+export { auth, getUserInfo, updateDisplayName, updateUserInfo, getUsers, sendConnectionRequest, fetchConnectionRequests };
