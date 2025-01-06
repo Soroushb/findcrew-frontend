@@ -22,7 +22,7 @@ const Search = () => {
   };
 
   return (
-    <div className='flex flex-col p-10'>
+    <div className='flex flex-col p-10 h-screen'>
 
       <div className='flex'>
         <h1 className='text-3xl p-8'>Search for a Role</h1>
@@ -35,7 +35,7 @@ const Search = () => {
           value={filter}
           onChange={(e) => setFilter(e.target.value)}  
         />
-        <button type="submit">Search</button>
+        <button className='bg-black text-white p-2 rounded-lg mx-2' type="submit">Search</button>
       </form>
 
       <div className='flex items-center justify-center'>
@@ -54,7 +54,7 @@ const Search = () => {
             ))}
           </div>
         ) : (
-          <p>No users found for this location.</p>
+          <p className='p-4'>No users found for this location.</p>
         )}
       </div>
       </div>

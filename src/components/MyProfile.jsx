@@ -105,10 +105,12 @@ const MyProfile = () => {
 
   return (
     <div className="flex justify-center items-center">
+     
       {!editMode && (
         <div className='flex flex-col'>
           <div className='flex w-screen p-20 justify-between'>
-            <h1 className='text-2xl font-semibold px-14'>My Profile</h1>
+            {selfProfile ? (<h1 className='text-2xl font-semibold px-14'>My Profile</h1>
+            ) : (<h1 className='text-2xl font-semibold px-14'>{name.toUpperCase()}</h1>)}
             {selfProfile ? (
               <div className='flex'>
                 <div onClick={() => setEditMode(true)} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
@@ -125,22 +127,42 @@ const MyProfile = () => {
           </div>
           <div className='flex p-10 mx-20 justify-between w-full'>
             <img src={images?.profile} alt="profile-pic" />
-            <div className='w-2/3 mr-10'>
-              <h1 className='text-2xl font-semibold'>Bio:</h1>
-              <h2>{bio.substring(0, 250)}...</h2>
+            <div className='w-2/3 mr-10 flex flex-col   items-start'>
+              <h1 className='text-2xl font-semibold my-2 bg-yellow-300 p-2 px-4 rounded-lg'>Bio:</h1>
+              <h2 className='w-2/3'>{bio.substring(0, 250)}...</h2>
             </div>
           </div>
+          <div className='grid grid-cols-2 w-full'>
           <div className='flex flex-col justify-start items-start px-20 py-10'>
-            <h2 className='bg-gray-300 text-start p-3 rounded-lg w-1/3 m-2 flex'>
+            <h2 className='bg-gray-300 w-full text-start p-3 rounded-lg m-2 flex'>
               <p className='mx-2 font-semibold'>Name:</p> {name}
             </h2>
-            <h2 className='bg-gray-300 text-start p-3 rounded-lg w-1/3 m-2 flex'>
+            <h2 className='bg-gray-300 text-start p-3 rounded-lg w-full m-2 flex'>
               <p className='mx-2 font-semibold'>Role:</p> {role}
             </h2>
-            <h2 className='bg-gray-300 text-start p-3 rounded-lg w-1/3 m-2 flex'>
+            <h2 className='bg-gray-300 text-start p-3 rounded-lg w-full m-2 flex'>
               <p className='mx-2 font-semibold'>Location:</p> {location}
             </h2>
           </div>
+        <div className='p-10'>
+        {selfProfile && (
+        <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
+        <h2 className='text-xl'>Connection Requests</h2>
+        {connectionRequests.length > 0 ? (
+          <ul>
+            {connectionRequests.map((request, index) => (
+              <li key={index}>
+                Request from: {request.senderUid} at {new Date(request.timestamp).toLocaleString()}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No connection requests yet.</p>
+        )}
+      </div>
+      )}
+          </div>
+        </div>
         </div>
       )}
       
@@ -169,22 +191,7 @@ const MyProfile = () => {
           {success && <p className="bg-green-500 p-2 rounded-lg">Profile Updated!</p>}
         </div>
       )}
-      {selfProfile && (
-        <div>
-        <h2>Connection Requests</h2>
-        {connectionRequests.length > 0 ? (
-          <ul>
-            {connectionRequests.map((request, index) => (
-              <li key={index}>
-                Request from: {request.senderUid} at {new Date(request.timestamp).toLocaleString()}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No connection requests yet.</p>
-        )}
-      </div>
-      )}
+      
     </div>
   );
 };
