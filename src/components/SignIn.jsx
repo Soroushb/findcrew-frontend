@@ -27,6 +27,7 @@ function SignIn() {
           uid: user.uid,
         });
         setError(''); 
+        navigate(`/profile/${user?.uid}`)
       })
       .catch((error) => {
         // Handle login errors
