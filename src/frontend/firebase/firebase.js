@@ -40,14 +40,13 @@ const getUserInfo = async (uid) => {
 };
 
 // Function to get all users in a specific location
-const getUsers = async (location) => {
+const getUsers = async (role) => {
   try {
     const usersRef = collection(db, "users");
 
-    // Convert the search input to lowercase
-    const lowercasedLocation = location.toLowerCase();
+    const lowercasedRole = role.toLowerCase();
 
-    const q = query(usersRef, where("updatedData.location", "==", lowercasedLocation));
+    const q = query(usersRef, where("updatedData.role", "==", lowercasedRole));
 
     const querySnapshot = await getDocs(q);
 
@@ -74,17 +73,29 @@ const updateUserInfo = async (uid, updatedData) => {
     const userRef = doc(db, "users", uid);
 
     // Convert the location to lowercase before saving
-    const lowercasedData = {
+    const dataToUpdate = {
       ...updatedData,
       location: updatedData.location.toLowerCase(),
+      bio: updatedData.bio || ""
     };
 
-    await setDoc(userRef, { updatedData: lowercasedData }, { merge: true });
+    await setDoc(userRef, { updatedData: dataToUpdate }, { merge: true });
     console.log("User information updated successfully.");
   } catch (error) {
     console.error("Error updating user info:", error);
   }
 };
+
+const updateUserBio = async (uid, updatedData) => {
+  try {
+    const userRef = doc(db, "users", uid);
+    await setDoc(userRef, updatedData, { merge: true }); // Save the entire object
+    console.log("Bio updated successfully.");
+  } catch (error) {
+    console.error("Error updating bio:", error);
+  }
+};
+
 
 // Function to update display name
 const updateDisplayName = async () => {
@@ -160,4 +171,4 @@ const fetchConnectionRequests = async (receiverUid) => {
 };
 
 // Export the functions
-export { auth, getUserInfo, updateDisplayName, updateUserInfo, getUsers, sendConnectionRequest, fetchConnectionRequests };
+export { auth, getUserInfo, updateUserBio ,updateDisplayName, updateUserInfo, getUsers, sendConnectionRequest, fetchConnectionRequests };

@@ -2,18 +2,22 @@ import React, {useContext} from 'react'
 import images from '../constants/images'
 import { UserContext } from '../UserContext'
 import {Link} from 'react-router-dom'
+import {motion} from 'framer-motion'
 
 const Home = () => {
 
     const {user} = useContext(UserContext)
 
   return (
-
+    <motion.div
+    initial={{opacity: 0, y: -50}}
+    animate={{opacity: 1, y: 0}}
+    transition={{ duration: 0.5}}>
     <div className='flex flex-row'>
-
+    
         <div className='flex flex-col p-20 w-1/3 '>
             <h1 className='text-4xl font-semibold'>Find Your<br/>Dream Crew</h1>
-            <p className='text-mx p-8'>
+            <p className='text- p-4 my-4 bg-yellow-200 border-yellow-500 rounded-xl'>
             At CrewFind, we are passionate about creating a platform that connects talented individuals with exciting opportunities, bridging the gap between creatives, professionals, and organizations. Born out of the realization that collaboration is key to achieving great things, CrewFind aims to revolutionize the way people network, find collaborators, and assemble teams for projects across a wide range of industries.
             </p>
             {user?.displayName ? (<>
@@ -26,13 +30,12 @@ const Home = () => {
          </>)}
 
         </div>
-        
         <div className='flex w-2/3 '>
             <img className=' rounded-lg ' height={30} src={images.filmset} alt='filmset' />
         </div>
-
-       
     </div>
+    </motion.div>
+
      
   )
 }

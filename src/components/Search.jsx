@@ -22,7 +22,7 @@ const Search = () => {
   };
 
   return (
-    <div className='flex flex-col p-10 h-screen'>
+    <div className='flex flex-col p-10 min-h-screen'>
 
       <div className='flex'>
         <h1 className='text-3xl p-8'>Search for a Role</h1>
@@ -31,32 +31,42 @@ const Search = () => {
       <form onSubmit={handleFilter}>
         <input 
           className='rounded-xl bg-gray-200 p-2 '
-          placeholder='Location'
+          placeholder='Role'
           value={filter}
           onChange={(e) => setFilter(e.target.value)}  
         />
         <button className='bg-black text-white p-2 rounded-lg mx-2' type="submit">Search</button>
       </form>
 
-      <div className='flex items-center justify-center'>
-    
-        {results.length > 0 ? (
-          <div className='grid grid-cols-3 w-2/3 items-center justify-center p-10'>
-            {results.map((user, index) => (
-              <div onClick={() => {console.log(user?.uid); navigate(`/profile/${user?.uid}`)}} className='m-2 p-2 flex flex-col bg-yellow-400 rounded-lg' key={index}>
-                <div className='flex justify-center'><img className='rounded-lg' src={images?.profile} alt='profile-pic'/></div>
-                <div className='flex items-center flex-col'>
-                <p>{user.displayName}</p>
-                <p>{user.updatedData.location}</p>
-                <p>{user.updatedData.skills}</p> 
-                </div>
-              </div> 
-            ))}
+      <div className="flex items-center justify-center">
+  {results.length > 0 ? (
+    <div className="grid grid-cols-3 w-2/3 items-center justify-center p-10 mb-4 gap-4">
+      {results.map((user, index) => (
+        <div 
+          key={index} 
+          className="m-2 p-4 h-full flex flex-col bg-yellow-400 rounded-lg cursor-pointer" 
+          onClick={() => navigate(`/profile/${user?.uid}`)}
+        >
+          <div className="flex justify-center mb-4">
+            <img 
+              className="rounded-lg" 
+              src={images?.profile} 
+              alt="profile-pic" 
+            />
           </div>
-        ) : (
-          <p className='p-4'>No users found for this location.</p>
-        )}
-      </div>
+          <div className="flex items-center flex-col">
+            <p className="font-semibold">{user.displayName}</p>
+            <p className="text-sm text-gray-700">{user.updatedData.location}</p>
+            <p className="text-sm text-gray-700">{user.updatedData.skills}</p> 
+          </div>
+        </div> 
+      ))}
+    </div>
+  ) : (
+    <p className="p-4 text-gray-500">No users found for this role...</p>
+  )}
+</div>
+
       </div>
     </div>
   );

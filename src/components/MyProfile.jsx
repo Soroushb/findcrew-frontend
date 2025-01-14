@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../UserContext';
-import { updateUserInfo, getUserInfo, sendConnectionRequest, fetchConnectionRequests } from '../frontend/firebase/firebase';
+import { updateUserInfo, getUserInfo, sendConnectionRequest, fetchConnectionRequests, updateUserBio } from '../frontend/firebase/firebase';
 import images from '../constants/images';
 import { useParams } from 'react-router-dom';
 
@@ -10,6 +10,7 @@ const MyProfile = () => {
   const [location, setLocation] = useState('');
   const [skills, setSkills] = useState('');
   const [bio, setBio] = useState('');
+  const [editBio, setEditBio] = useState(false)
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [connectionRequests, setConnectionRequests] = useState([]); 
@@ -23,11 +24,11 @@ const MyProfile = () => {
     try {
       const userData = await getUserInfo(id);
       if (userData) {
-        setLocation(userData.updatedData.location);
-        setSkills(userData.updatedData.skills);
-        setBio(userData.updatedData.bio);
-        setName(userData.displayName);
-        setRole(userData.updatedData.role);
+        setLocation(userData?.updatedData?.location);
+        setSkills(userData?.updatedData?.skills);
+        setBio(userData?.updatedData?.bio);
+        setName(userData?.displayName);
+        setRole(userData?.updatedData?.role);
       }
     } catch (error) {
       console.error("Error fetching user info:", error);
@@ -59,11 +60,29 @@ const MyProfile = () => {
   
     fetchRequests();
   }, [user]);
+  
+
+  const handleSaveBio = async () => {
+    try {
+      const updatedUser = { bio };
+      await updateUserBio(user?.uid, updatedUser);
+
+      setUser((prevUser) => ({
+        ...prevUser,
+        bio,
+      }));
+
+      setEditBio(false); // Exit edit mode
+    } catch (err) {
+      console.error('Failed to update bio:', err.message);
+    }
+  };
+
 
   const handleConnect = async () => {
     try {
       if (user?.uid && id) {
-        await sendConnectionRequest(user.uid, id);
+        await sendConnectionRequest(user?.uid, id);
         alert("Connection request sent!");
       } else {
         alert("Unable to send connection request. Please try again.");
@@ -110,7 +129,7 @@ const MyProfile = () => {
         <div className='flex flex-col'>
           <div className='flex w-screen p-20 justify-between'>
             {selfProfile ? (<h1 className='text-2xl font-semibold px-14'>My Profile</h1>
-            ) : (<h1 className='text-2xl font-semibold px-14'>{name.toUpperCase()}</h1>)}
+            ) : (<h1 className='text-2xl font-semibold px-14'>{name?.toUpperCase()}</h1>)}
             {selfProfile ? (
               <div className='flex'>
                 <div onClick={() => setEditMode(true)} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
@@ -127,21 +146,59 @@ const MyProfile = () => {
           </div>
           <div className='flex p-10 mx-20 justify-between w-full'>
             <img src={images?.profile} alt="profile-pic" />
-            <div className='w-2/3 mr-10 flex flex-col   items-start'>
+            <div className='w-2/3 mr-10 flex flex-col items-start'>
               <h1 className='text-2xl font-semibold my-2 bg-yellow-300 p-2 px-4 rounded-lg'>Bio:</h1>
-              <h2 className='w-2/3'>{bio.substring(0, 250)}...</h2>
-            </div>
+
+              <div className='border border-yellow-500 w-5/6 rounded-lg p-4'>
+              {editBio ? (
+                <div>
+                <textarea
+                  className="w-full border p-2 rounded-md"
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                />
+                <div className="flex justify-end mt-2">
+                  <button
+                    className="text-white bg-green-500 px-4 py-1 rounded-lg mr-2"
+                    onClick={handleSaveBio}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="text-white bg-gray-500 px-4 py-1 rounded-lg"
+                    onClick={() => setEditBio(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+              ) : (
+
+              <div className="flex justify-between items-center">
+                  <h2 className="text-sm">{bio?.substring(0,250) || 'No bio available.'}</h2>
+                  {selfProfile && (
+                    <button
+                      className="text-blue-500 underline ml-4"
+                      onClick={() => setEditBio(true)}
+                    >
+                      Edit
+                    </button>
+                  )}
+                </div>)}
+              <h2 className='text-sm'>{bio?.substring(0, 250)}...</h2>
+              </div>
+          </div>
           </div>
           <div className='grid grid-cols-2 w-full'>
           <div className='flex flex-col justify-start items-start px-20 py-10'>
             <h2 className='bg-gray-300 w-full text-start p-3 rounded-lg m-2 flex'>
-              <p className='mx-2 font-semibold'>Name:</p> {name}
+              <p className='mx-2 font-semibold'>Name:</p> {name ? name : ""}
             </h2>
             <h2 className='bg-gray-300 text-start p-3 rounded-lg w-full m-2 flex'>
-              <p className='mx-2 font-semibold'>Role:</p> {role}
+              <p className='mx-2 font-semibold'>Role:</p> {role ? role : ""}
             </h2>
             <h2 className='bg-gray-300 text-start p-3 rounded-lg w-full m-2 flex'>
-              <p className='mx-2 font-semibold'>Location:</p> {location}
+              <p className='mx-2 font-semibold'>Location:</p> {location ? location : ""}
             </h2>
           </div>
         <div className='p-10'>
@@ -176,7 +233,7 @@ const MyProfile = () => {
           </div>
           <form className="flex flex-col items-start" onSubmit={handleSubmit}>
             <label className="pl-2">Role</label>
-            <input className="rounded-md p-2 m-2" type="text" placeholder="Role" value={role} onChange={(e) => setRole(e.target.value)} />
+            <input className="rounded-md p-2 m-2" type="text" placeholder="Role" value={role} onChange={(e) => setRole(e.target.value.toLowerCase())} />
             <label className="pl-2">Location</label>
             <input className="rounded-md p-2 m-2" type="text" placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
             <label className="pl-2">Skills</label>
