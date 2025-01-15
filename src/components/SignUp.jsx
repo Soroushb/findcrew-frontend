@@ -60,6 +60,7 @@ function SignUp() {
               placeholder="Display Name"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
+              required
             />
             <label className='pl-2'>Email</label>
             <input
@@ -68,6 +69,7 @@ function SignUp() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
             <label className='pl-2'>Password</label>
             <input
@@ -76,6 +78,7 @@ function SignUp() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
             <label className='pl-2'>Repeat Password</label>
             <input
@@ -84,6 +87,7 @@ function SignUp() {
               placeholder="Repeat Password"
               value={passwordRepeat}
               onChange={(e) => setPasswordRepeat(e.target.value)}
+              required
             />
             <div></div>
             <div className='flex self-center mt-4'>

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../UserContext';
-import { updateUserInfo, getUserInfo, sendConnectionRequest, fetchConnectionRequests, updateUserBio } from '../frontend/firebase/firebase';
+import { updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fetchConnectionRequests, updateUserBio } from '../frontend/firebase/firebase';
 import images from '../constants/images';
 import { useParams } from 'react-router-dom';
 
@@ -24,11 +24,11 @@ const MyProfile = () => {
     try {
       const userData = await getUserInfo(id);
       if (userData) {
-        setLocation(userData?.updatedData?.location);
-        setSkills(userData?.updatedData?.skills);
-        setBio(userData?.updatedData?.bio);
+        setLocation(userData?.location);
+        setSkills(userData?.skills);
+        setBio(userData?.bio);
         setName(userData?.displayName);
-        setRole(userData?.updatedData?.role);
+        setRole(userData?.role);
       }
     } catch (error) {
       console.error("Error fetching user info:", error);
@@ -64,8 +64,8 @@ const MyProfile = () => {
 
   const handleSaveBio = async () => {
     try {
-      const updatedUser = { bio };
-      await updateUserBio(user?.uid, updatedUser);
+      
+      await updateUserField(user?.uid, "bio" ,bio);
 
       setUser((prevUser) => ({
         ...prevUser,

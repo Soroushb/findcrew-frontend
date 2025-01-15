@@ -79,7 +79,7 @@ const updateUserInfo = async (uid, updatedData) => {
       bio: updatedData.bio || ""
     };
 
-    await setDoc(userRef, { updatedData: dataToUpdate }, { merge: true });
+    await setDoc(userRef,  dataToUpdate , { merge: true });
     console.log("User information updated successfully.");
   } catch (error) {
     console.error("Error updating user info:", error);
@@ -89,13 +89,34 @@ const updateUserInfo = async (uid, updatedData) => {
 const updateUserBio = async (uid, updatedData) => {
   try {
     const userRef = doc(db, "users", uid);
-    await setDoc(userRef, updatedData, { merge: true }); // Save the entire object
+
+    await setDoc(userRef, { updatedData: { bio: updatedData.bio } }, { merge: true });
     console.log("Bio updated successfully.");
   } catch (error) {
     console.error("Error updating bio:", error);
   }
 };
 
+
+const updateUserField = async (uid, field, value) => {
+  try {
+    if (!uid) {
+      throw new Error("User is not authenticated");
+    }
+
+    const userRef = doc(db, "users", uid);
+
+    // Update the specific field
+    const updateData = {
+      [field]: value
+    };
+
+    await setDoc(userRef, updateData, { merge: true });
+    console.log(`${field} updated successfully.`);
+  } catch (error) {
+    console.error(`Error updating ${field}:`, error);
+  }
+};
 
 // Function to update display name
 const updateDisplayName = async () => {
@@ -171,4 +192,4 @@ const fetchConnectionRequests = async (receiverUid) => {
 };
 
 // Export the functions
-export { auth, getUserInfo, updateUserBio ,updateDisplayName, updateUserInfo, getUsers, sendConnectionRequest, fetchConnectionRequests };
+export { auth, getUserInfo, updateUserBio ,updateDisplayName, updateUserInfo, updateUserField , getUsers, sendConnectionRequest, fetchConnectionRequests };
