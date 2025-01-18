@@ -4,6 +4,7 @@ import { updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fe
 import images from '../constants/images';
 import { MdModeEdit } from "react-icons/md";
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const MyProfile = () => {
   const { user, setUser } = useContext(UserContext);
@@ -23,6 +24,7 @@ const MyProfile = () => {
   const [selfProfile, setSelfProfile] = useState(false);
   const { id } = useParams();
   const [requestNames, setRequestNames] = useState([]);
+  const navigate = useNavigate()
 
   const fetchUserInfo = async () => {
     try {
@@ -326,15 +328,15 @@ const MyProfile = () => {
         {selfProfile && (
         <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
         <h2 className='text-xl'>Connection Requests</h2>
-        {requestNames.length > 0 ? (
-          <div className='flex flex-col'>
-            {requestNames?.map((name) => (
-              <div key={id}>{name}</div>
-            ))}
-          </div>
-        ) : (
-          <p>No connection requests yet.</p>
-        )}
+        {requestNames?.map((user, index) => (
+  <div
+    key={index}
+    className="hover:cursor-pointer hover:underline"
+    onClick={() => navigate(`/profile/${connectionRequests[index]?.senderUid}`)}
+  >
+    {user}
+  </div>
+))}
       </div>
       )}
           </div>
