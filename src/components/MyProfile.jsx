@@ -40,6 +40,7 @@ const MyProfile = () => {
   };
 
   useEffect(() => {
+
     const fetchAllRequestUsernames = async () => {
       try {
         const names = await Promise.all(
@@ -325,15 +326,12 @@ const MyProfile = () => {
         {selfProfile && (
         <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
         <h2 className='text-xl'>Connection Requests</h2>
-        {connectionRequests.length > 0 ? (
-          <ul>
-            {connectionRequests.map((request, index) => {
-                            return (
-              <li key={index}>
-                Request from: {request.senderUid} at {new Date(request.timestamp).toLocaleString()}
-              </li>
-            )})}
-          </ul>
+        {requestNames.length > 0 ? (
+          <div className='flex flex-col'>
+            {requestNames?.map((name) => (
+              <div key={id}>{name}</div>
+            ))}
+          </div>
         ) : (
           <p>No connection requests yet.</p>
         )}
