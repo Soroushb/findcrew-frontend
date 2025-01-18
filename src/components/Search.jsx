@@ -45,7 +45,7 @@ const Search = () => {
 
       <div className="flex items-center justify-center">
   {results.length > 0 ? (
-    <div className="grid grid-cols-3 w-2/3 items-center justify-center p-10 mb-4 gap-4">
+    <div className="grid lg:grid-cols-3 gird-cols-1  lg:w-2/3 items-center justify-center p-10 mb-4 gap-4">
       
       {results.map((user, index) => (
         

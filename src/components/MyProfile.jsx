@@ -168,9 +168,9 @@ const MyProfile = () => {
      
       {!editMode && (
         <div className='flex flex-col'>
-          <div className='flex w-screen p-20 justify-between'>
-            {selfProfile ? (<h1 className='text-2xl font-semibold px-14'>My Profile</h1>
-            ) : (<h1 className='text-2xl font-semibold px-14'>{name?.toUpperCase()}</h1>)}
+          <div className='flex flex-col lg:flex-row w-screen items-center lg:p-20 p-10 justify-between'>
+            {selfProfile ? (<h1 className='text-2xl font-semibold my-2 px-14'>My Profile</h1>
+            ) : (<h1 className='text-2xl font-semibold my-2 px-14'>{name?.toUpperCase()}</h1>)}
             {selfProfile ? (
               <div className='flex'>
                 <div onClick={() => setEditMode(true)} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
@@ -185,12 +185,12 @@ const MyProfile = () => {
               </div>
             )}
           </div>
-          <div className='flex p-10 mx-20 justify-between w-full'>
+          <div className='flex lg:flex-row flex-col p-10 lg:mx-20 justify-between'>
             <img src={images?.profile} alt="profile-pic" />
-            <div className='w-2/3 mr-10 flex flex-col items-start'>
-              <h1 className='text-2xl font-semibold my-2 bg-yellow-300 p-2 px-4 rounded-lg'>Bio:</h1>
+            <div className='lg:w-2/3 lg:mr-10 flex flex-col lg:items-start justify-center'>
+              <h1 className='lg:text-2xl text-lg font-semibold my-2 bg-yellow-300 p-2 lg:px-4 rounded-lg'>Bio:</h1>
 
-              <div className='border border-yellow-500 w-5/6 rounded-lg p-4'>
+              <div className='border border-yellow-500 lg:w-5/6  rounded-lg p-4'>
               {editBio ? (
                 <div>
                 <textarea
@@ -236,7 +236,7 @@ const MyProfile = () => {
             <h2 className='bg-gray-300 w-full text-start p-3 rounded-lg m-2 flex'>
               {!editName ? (
                <div className='flex justify-between w-full'> 
-                <div className='flex mx-2'><span className='font-semibold mx-2'>Name: </span> {name ? name : ""}</div>  
+                <div className='flex  mx-2'><span className='font-semibold mx-2'>Name: </span> {name ? name : ""}</div>  
                 <p onClick={() => setEditName(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>
                 </div>
               ) : (
