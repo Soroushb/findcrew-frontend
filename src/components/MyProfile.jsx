@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../UserContext';
-import { updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fetchConnectionRequests, updateUserBio } from '../frontend/firebase/firebase';
+import { updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fetchConnectionRequests } from '../frontend/firebase/firebase';
 import images from '../constants/images';
+import { MdModeEdit } from "react-icons/md";
 import { useParams } from 'react-router-dom';
 
 const MyProfile = () => {
@@ -11,6 +12,9 @@ const MyProfile = () => {
   const [skills, setSkills] = useState('');
   const [bio, setBio] = useState('');
   const [editBio, setEditBio] = useState(false)
+  const [editName, setEditName] = useState(false)
+  const [editRole, setEditRole] = useState(false)
+  const [editLocation, setEditLocation] = useState(false)
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [connectionRequests, setConnectionRequests] = useState([]); 
@@ -18,7 +22,7 @@ const MyProfile = () => {
   const [editMode, setEditMode] = useState(false);
   const [selfProfile, setSelfProfile] = useState(false);
   const { id } = useParams();
-  console.log(`${id} and ${user?.uid}`);
+  const [requestNames, setRequestNames] = useState([]);
 
   const fetchUserInfo = async () => {
     try {
@@ -36,6 +40,25 @@ const MyProfile = () => {
   };
 
   useEffect(() => {
+    const fetchAllRequestUsernames = async () => {
+      try {
+        const names = await Promise.all(
+          connectionRequests.map((request) => getUserInfo(request?.senderUid))
+        );
+        setRequestNames(names.map((user) => user?.displayName));
+      } catch (err) {
+        console.error("Error fetching usernames:", err);
+      }
+    };
+  
+    if (connectionRequests.length > 0) {
+      fetchAllRequestUsernames();
+      console.log(requestNames)
+    }
+
+  }, [connectionRequests]);
+
+  useEffect(() => {
     if (id && user?.uid) {
       setSelfProfile(id === user?.uid);
     } else {
@@ -50,7 +73,7 @@ const MyProfile = () => {
       if (user?.uid) {
         try {
           const requests = await fetchConnectionRequests(user.uid);
-          console.log(requests); // Log the fetched data
+          console.log(requests); 
           setConnectionRequests(requests);
         } catch (error) {
           console.error("Error fetching connection requests:", error);
@@ -62,21 +85,22 @@ const MyProfile = () => {
   }, [user]);
   
 
-  const handleSaveBio = async () => {
-    try {
-      
-      await updateUserField(user?.uid, "bio" ,bio);
-
+  const handleSaveField = async (field, value) => {
+    try { 
+      await updateUserField(user?.uid, field ,value);
       setUser((prevUser) => ({
         ...prevUser,
         bio,
       }));
-
-      setEditBio(false); // Exit edit mode
+      setEditBio(false);
+      setEditName(false);
+      setEditRole(false);
+      setEditLocation(false);
     } catch (err) {
       console.error('Failed to update bio:', err.message);
     }
   };
+
 
 
   const handleConnect = async () => {
@@ -156,11 +180,12 @@ const MyProfile = () => {
                   className="w-full border p-2 rounded-md"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
+                  required
                 />
                 <div className="flex justify-end mt-2">
                   <button
                     className="text-white bg-green-500 px-4 py-1 rounded-lg mr-2"
-                    onClick={handleSaveBio}
+                    onClick={()=> handleSaveField("bio", bio)}
                   >
                     Save
                   </button>
@@ -178,10 +203,10 @@ const MyProfile = () => {
                   <h2 className="text-sm">{bio?.substring(0,250) || 'No bio available.'}</h2>
                   {selfProfile && (
                     <button
-                      className="text-blue-500 underline ml-4"
+                      className=" ml-4"
                       onClick={() => setEditBio(true)}
                     >
-                      Edit
+                      <MdModeEdit className='scale-150'/>
                     </button>
                   )}
                 </div>)}
@@ -192,13 +217,108 @@ const MyProfile = () => {
           <div className='grid grid-cols-2 w-full'>
           <div className='flex flex-col justify-start items-start px-20 py-10'>
             <h2 className='bg-gray-300 w-full text-start p-3 rounded-lg m-2 flex'>
-              <p className='mx-2 font-semibold'>Name:</p> {name ? name : ""}
+              {!editName ? (
+               <div className='flex justify-between w-full'> 
+                <div className='flex mx-2'><span className='font-semibold'>Name: </span> {name ? name : ""}</div>  
+                <p onClick={() => setEditName(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>
+                </div>
+              ) : (
+               <>
+                <div className='w-full'>
+                <input
+                  className="w-full border p-2 rounded-md"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+                <div className="flex justify-end mt-2">
+                  <button
+                    className="text-white bg-green-500 px-4 py-1 rounded-lg mr-2"
+                    onClick={() => handleSaveField("displayName", name)}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="text-white bg-gray-500 px-4 py-1 rounded-lg"
+                    onClick={() => setEditName(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+                </div>
+               </>
+              )}
+
             </h2>
             <h2 className='bg-gray-300 text-start p-3 rounded-lg w-full m-2 flex'>
-              <p className='mx-2 font-semibold'>Role:</p> {role ? role : ""}
+            
+            {!editRole ? (
+               <div className='flex justify-between w-full'> 
+                <div className='flex mx-2'><span className='font-semibold'>Role: </span> {role ? role : ""}</div>  
+                <p onClick={() => setEditRole(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>
+                </div>
+              ) : (
+               <>
+                <div className='w-full'>
+                <input
+                  className="w-full border p-2 rounded-md"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  required
+                />
+                <div className="flex justify-end mt-2">
+                  <button
+                    className="text-white bg-green-500 px-4 py-1 rounded-lg mr-2"
+                    onClick={() => handleSaveField("role", role)}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="text-white bg-gray-500 px-4 py-1 rounded-lg"
+                    onClick={() => setEditRole(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+                </div>
+               </>
+              )}
+
             </h2>
             <h2 className='bg-gray-300 text-start p-3 rounded-lg w-full m-2 flex'>
-              <p className='mx-2 font-semibold'>Location:</p> {location ? location : ""}
+              
+            {!editLocation ? (
+               <div className='flex justify-between w-full'> 
+                <div className='flex mx-2'><span className='font-semibold'>Location </span> {location ? location : ""}</div>  
+                <p onClick={() => setEditLocation(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>
+                </div>
+              ) : (
+               <>
+                <div className='w-full'>
+                <input
+                  className="w-full border p-2 rounded-md"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  required
+                />
+                <div className="flex justify-end mt-2">
+                  <button
+                    className="text-white bg-green-500 px-4 py-1 rounded-lg mr-2"
+                    onClick={() => handleSaveField("location", location)}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="text-white bg-gray-500 px-4 py-1 rounded-lg"
+                    onClick={() => setEditLocation(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+                </div>
+               </>
+              )}
+
             </h2>
           </div>
         <div className='p-10'>
@@ -207,11 +327,12 @@ const MyProfile = () => {
         <h2 className='text-xl'>Connection Requests</h2>
         {connectionRequests.length > 0 ? (
           <ul>
-            {connectionRequests.map((request, index) => (
+            {connectionRequests.map((request, index) => {
+                            return (
               <li key={index}>
                 Request from: {request.senderUid} at {new Date(request.timestamp).toLocaleString()}
               </li>
-            ))}
+            )})}
           </ul>
         ) : (
           <p>No connection requests yet.</p>
