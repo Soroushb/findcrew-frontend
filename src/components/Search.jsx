@@ -3,6 +3,7 @@ import { UserContext } from '../UserContext';
 import { getUsers } from '../frontend/firebase/firebase';
 import images from '../constants/images';
 import { useNavigate } from 'react-router-dom';
+import {motion} from 'framer-motion'
 
 const Search = () => {
   const { user, setUser } = useContext(UserContext);
@@ -23,10 +24,14 @@ const Search = () => {
 
   return (
     <div className='flex flex-col p-10 min-h-screen'>
-
+      
       <div className='flex'>
         <h1 className='text-3xl p-8'>Search for a Role</h1>
       </div>
+       <motion.div
+              initial={{opacity: 0, y: -50}}
+              animate={{opacity: 1, y: 0}}
+              transition={{ duration: 1}}>
       <div>
       <form onSubmit={handleFilter}>
         <input 
@@ -41,10 +46,15 @@ const Search = () => {
       <div className="flex items-center justify-center">
   {results.length > 0 ? (
     <div className="grid grid-cols-3 w-2/3 items-center justify-center p-10 mb-4 gap-4">
+      
       {results.map((user, index) => (
-        <div 
+        
+        <motion.div
+        initial={{opacity: 0, y: -50}}
+        animate={{opacity: 1, y: 0}}
+        transition={{ duration: 1}}
           key={index} 
-          className="m-2 p-4 h-full flex flex-col bg-yellow-400 rounded-lg cursor-pointer" 
+          className="m-2 p-4 h-full flex flex-col bg-gray-900 rounded-lg text-white cursor-pointer" 
           onClick={() => navigate(`/profile/${user?.uid}`)}
         >
           <div className="flex justify-center mb-4">
@@ -59,15 +69,15 @@ const Search = () => {
             <p className="text-sm text-gray-700">{user.updatedData.location}</p>
             <p className="text-sm text-gray-700">{user.updatedData.skills}</p> 
           </div>
-        </div> 
+        </motion.div> 
       ))}
     </div>
   ) : (
     <p className="p-4 text-gray-500">No users found for this role...</p>
   )}
 </div>
-
       </div>
+      </motion.div>
     </div>
   );
 };

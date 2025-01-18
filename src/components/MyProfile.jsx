@@ -404,13 +404,13 @@ const MyProfile = () => {
         value={bio} 
         onChange={(e) => setBio(e.target.value)} 
       />
-      <label className="pl-2">Profile Picture</label>
+      {/* <label className="pl-2">Profile Picture</label>
       <input 
         className="rounded-md p-2 m-2" 
         type="file" 
         accept="image/*" 
         onChange={(e) => setProfilePicture(e.target.files[0])} 
-      />
+      /> */}
       <div className="flex self-center mt-4">
         <button 
           className="text-white bg-black p-2 rounded-lg" 

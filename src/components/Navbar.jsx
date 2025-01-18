@@ -1,58 +1,90 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../UserContext';
 import LogoutButton from './LogoutButton';
 import { useNavigate } from 'react-router-dom';
+import { IoIosMenu } from "react-icons/io";
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const { user } = useContext(UserContext);
-  const navigate = useNavigate()
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
+  // Motion variants for menu animation
+  const menuVariants = {
+    open: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
+    closed: { opacity: 0, x: 100, transition: { type: "spring", stiffness: 300, damping: 30 } },
+  };
 
   return (
-    <div className='flex flex-row justify-between bg-yellow-400 p-7'>
-      <div className='flex flex-row justify-center items-center'>
-        <Link to="/">
-          <div className='flex hover:cursor-pointer font-semibold text-2xl'>
+    <>
+      {/* Desktop Navbar */}
+      <div className="hidden lg:flex justify-between bg-yellow-400 p-6">
+        <div className="flex items-center space-x-10">
+          <Link to="/" className="font-semibold text-3xl text-gray-800 hover:text-gray-600">
             CrewFind
-          </div>
-        </Link>
-        <Link to="/search">
-        <div className='bg-black p-2 min-w-28 rounded-md text-md hover:cursor-pointer text-white ml-10'>
-          Search
+          </Link>
+          <Link to="/search" className="bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors">
+            Search
+          </Link>
         </div>
-        </Link>
-      </div>
-      <div className='flex flex-row justify-between'>
-        {!user ? (
-          <>
-            <Link to="/signup">
-              <div className='bg-white p-2 min-w-20 rounded-md text-md hover:cursor-pointer text-black'>
+        <div className="flex items-center space-x-4">
+          {!user ? (
+            <>
+              <Link to="/signup" className="bg-white text-black py-2 px-4 rounded-md hover:bg-gray-100 transition-colors">
                 Register
-              </div>
-            </Link>
-            <Link to="/signin">
-              <div className='bg-black p-2 min-w-18 rounded-md text-md hover:cursor-pointer text-white ml-4'>
+              </Link>
+              <Link to="/signin" className="bg-stone-800 text-white py-2 px-4 rounded-md hover:bg-stone-700 transition-colors">
                 Login
+              </Link>
+            </>
+          ) : (
+            <div className="flex items-center space-x-4">
+              <LogoutButton />
+              <div 
+                onClick={() => navigate(`profile/${user.uid}`)} 
+                className="bg-black text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl hover:bg-gray-700 cursor-pointer">
+                {user?.displayName.charAt(0)}
               </div>
-            </Link>
-          </>
-        ) : (
-          <div className='flex flex-row'>
-          <div className='p-2'>
-          <LogoutButton/>
-          </div>
-          
-          <div onClick={() => navigate(`profile/${user.uid}`)} className='text-white bg-black text-2xl rounded-full w-12 h-12 mr-10 p-2 hover:cursor-pointer'>
-            {user?.displayName.charAt(0)}
-            
-          </div>
-          
-
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Mobile Navbar */}
+      <div className="lg:hidden bg-yellow-400">
+        <div className="flex justify-between items-center p-5">
+          <Link to="/" onClick={() => menuOpen(false)} className="font-semibold text-2xl text-gray-800 hover:text-gray-600">
+            CrewFind
+          </Link>
+          <div className="relative">
+            <IoIosMenu 
+              className="text-3xl text-gray-800 hover:text-gray-600 cursor-pointer"
+              onClick={() => setMenuOpen(!menuOpen)} 
+            />
+            <motion.div
+              className="absolute right-0 mt-2 bg-black text-white p-4 rounded-lg shadow-lg space-y-4"
+              initial="closed"
+              animate={menuOpen ? "open" : "closed"}
+              variants={menuVariants}
+            >
+              <Link to="/" onClick={() => menuOpen(false)} className="block text-lg hover:text-yellow-400 transition-colors">Home</Link>
+              <Link to="/search" onClick={() => menuOpen(false)} className="block text-lg hover:text-yellow-400 transition-colors">Search</Link>
+              {!user ? (
+                <>
+                  <Link to="/signin" onClick={() => menuOpen(false)} className="block text-lg hover:text-yellow-400 transition-colors">Login</Link>
+                  <Link to="/signup" onClick={() => menuOpen(false)} className="block text-lg hover:text-yellow-400 transition-colors">Create Account</Link>
+                </>
+              ) : (
+                <Link to={`profile/${user.uid}`} onClick={() => menuOpen(false)} className="block text-lg hover:text-yellow-400 transition-colors">Profile</Link>
+              )}
+              <LogoutButton />
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 

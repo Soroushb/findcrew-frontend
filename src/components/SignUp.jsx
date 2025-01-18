@@ -2,7 +2,9 @@ import React, { useState, useContext } from 'react';
 import { auth } from "../frontend/firebase/firebase";   
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { Link } from 'react-router-dom';
-import { UserContext } from '../UserContext'; // Import UserContext
+import { UserContext } from '../UserContext'; 
+import {motion} from 'framer-motion'
+
 
 function SignUp() {
     const { setUser } = useContext(UserContext); // Access the setUser function from context
@@ -50,6 +52,10 @@ function SignUp() {
   
     return (
       <div className='flex justify-center items-center'>
+        <motion.div
+        initial={{opacity: 0, y: -50}}
+        animate={{opacity: 1, y: 0}}
+        transition={{ duration: 1}}>
         <div className='m-20 bg-gray-300 p-12 rounded-lg flex flex-col justify-start'>
           <h2 className='text-2xl m-2 font-semibold mb-10'>Sign Up</h2>
           <form className='flex flex-col items-start' onSubmit={handleSignUp}>
@@ -107,6 +113,7 @@ function SignUp() {
             </Link>
           </div>
         </div>
+        </motion.div>
       </div>
     );
 }
