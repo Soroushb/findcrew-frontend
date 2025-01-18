@@ -1,13 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../UserContext';
-import { updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fetchConnectionRequests } from '../frontend/firebase/firebase';
+import { uploadProfilePicture, updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fetchConnectionRequests } from '../frontend/firebase/firebase';
 import images from '../constants/images';
 import { MdModeEdit } from "react-icons/md";
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { auth, storage } from "../frontend/firebase/firebase"; // Adjust the import path based on your directory structure
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Firebase storage utilities
 
 const MyProfile = () => {
   const { user, setUser } = useContext(UserContext);
+  const [profilePicture, setProfilePicture] = useState(null);
   const [role, setRole] = useState('');
   const [location, setLocation] = useState('');
   const [skills, setSkills] = useState('');
@@ -122,30 +125,41 @@ const MyProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    if (!auth.currentUser) {
+      setError("User is not authenticated.");
+      return;
+    }
+  
+    const uid = auth.currentUser.uid;
+  
     try {
-      const updatedUser = {
-        location,
-        skills,
-        bio, 
-        role
-      };
-
-      await updateUserInfo(user?.uid, updatedUser);
-
-      setUser((prevUser) => ({
-        ...prevUser,
+      setError(null);
+      setSuccess(false);
+  
+      // Upload profile picture if a file is selected
+      let profilePictureURL = null;
+      if (profilePicture) {
+        const fileRef = ref(storage, `profilePictures/${uid}/${profilePicture.name}`);
+        const snapshot = await uploadBytes(fileRef, profilePicture);
+        profilePictureURL = await getDownloadURL(snapshot.ref);
+      }
+  
+      // Update Firestore with profile details
+      const updatedData = {
+        role,
         location,
         skills,
         bio,
-        role
-      }));
-
+        ...(profilePictureURL && { profilePicture: profilePictureURL }), // Add picture URL if it exists
+      };
+  
+      await updateUserInfo(uid, updatedData);
+  
       setSuccess(true);
-      setEditMode(false);
-      setError('');
     } catch (err) {
-      setError('Failed to update profile: ' + err.message);
+      setError("Failed to update profile. Please try again.");
+      console.error(err);
     }
   };
 
@@ -222,7 +236,7 @@ const MyProfile = () => {
             <h2 className='bg-gray-300 w-full text-start p-3 rounded-lg m-2 flex'>
               {!editName ? (
                <div className='flex justify-between w-full'> 
-                <div className='flex mx-2'><span className='font-semibold'>Name: </span> {name ? name : ""}</div>  
+                <div className='flex mx-2'><span className='font-semibold mx-2'>Name: </span> {name ? name : ""}</div>  
                 <p onClick={() => setEditName(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>
                 </div>
               ) : (
@@ -257,7 +271,7 @@ const MyProfile = () => {
             
             {!editRole ? (
                <div className='flex justify-between w-full'> 
-                <div className='flex mx-2'><span className='font-semibold'>Role: </span> {role ? role : ""}</div>  
+                <div className='flex mx-2'><span className='font-semibold mx-2'>Role: </span> {role ? role : ""}</div>  
                 <p onClick={() => setEditRole(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>
                 </div>
               ) : (
@@ -292,7 +306,7 @@ const MyProfile = () => {
               
             {!editLocation ? (
                <div className='flex justify-between w-full'> 
-                <div className='flex mx-2'><span className='font-semibold'>Location </span> {location ? location : ""}</div>  
+                <div className='flex mx-2'><span className='font-semibold mx-2'>Location: </span> {location ? location : ""}</div>  
                 <p onClick={() => setEditLocation(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>
                 </div>
               ) : (
@@ -329,14 +343,14 @@ const MyProfile = () => {
         <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
         <h2 className='text-xl'>Connection Requests</h2>
         {requestNames?.map((user, index) => (
-  <div
-    key={index}
-    className="hover:cursor-pointer hover:underline"
-    onClick={() => navigate(`/profile/${connectionRequests[index]?.senderUid}`)}
-  >
-    {user}
-  </div>
-))}
+        <div
+          key={index}
+          className="hover:cursor-pointer hover:underline"
+          onClick={() => navigate(`/profile/${connectionRequests[index]?.senderUid}`)}
+        >
+        {user}
+      </div>
+      ))}
       </div>
       )}
           </div>
@@ -345,30 +359,72 @@ const MyProfile = () => {
       )}
       
       {editMode && (
-        <div className="m-20 bg-gray-300 p-12 rounded-lg relative flex flex-col justify-start">
-          <div onClick={() => setEditMode(false)} className="absolute top-2 right-2 bg-black hover:scale-110 font-semibold w-fit text-white rounded-full px-3 pb-1 cursor-pointer">
-            x
-          </div>
-          <div className='flex'>
-            <h2 className="text-2xl m-2 font-semibold mb-10">Update Profile</h2>
-          </div>
-          <form className="flex flex-col items-start" onSubmit={handleSubmit}>
-            <label className="pl-2">Role</label>
-            <input className="rounded-md p-2 m-2" type="text" placeholder="Role" value={role} onChange={(e) => setRole(e.target.value.toLowerCase())} />
-            <label className="pl-2">Location</label>
-            <input className="rounded-md p-2 m-2" type="text" placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
-            <label className="pl-2">Skills</label>
-            <input className="rounded-md p-2 m-2" type="text" placeholder="Skills" value={skills} onChange={(e) => setSkills(e.target.value)} />
-            <label className="pl-2">Bio</label>
-            <textarea className="rounded-md p-2 m-2" placeholder="Write your bio" value={bio} onChange={(e) => setBio(e.target.value)} />
-            <div className="flex self-center mt-4">
-              <button className="text-white bg-black p-2 rounded-lg" type="submit">Update Profile</button>
-            </div>
-          </form>
-          {error && <p className="bg-red-500 p-2 rounded-lg">{error}</p>}
-          {success && <p className="bg-green-500 p-2 rounded-lg">Profile Updated!</p>}
-        </div>
-      )}
+  <div className="m-20 bg-gray-300 p-12 rounded-lg relative flex flex-col justify-start">
+    <div 
+      onClick={() => setEditMode(false)} 
+      className="absolute top-2 right-2 bg-black hover:scale-110 font-semibold w-fit text-white rounded-full px-3 pb-1 cursor-pointer"
+    >
+      x
+    </div>
+    <div className="flex">
+      <h2 className="text-2xl m-2 font-semibold mb-10">Update Profile</h2>
+    </div>
+    <form 
+      className="flex flex-col items-start" 
+      onSubmit={handleSubmit}
+    >
+      <label className="pl-2">Role</label>
+      <input 
+        className="rounded-md p-2 m-2" 
+        type="text" 
+        placeholder="Role" 
+        value={role} 
+        onChange={(e) => setRole(e.target.value.toLowerCase())} 
+      />
+      <label className="pl-2">Location</label>
+      <input 
+        className="rounded-md p-2 m-2" 
+        type="text" 
+        placeholder="Location" 
+        value={location} 
+        onChange={(e) => setLocation(e.target.value)} 
+      />
+      <label className="pl-2">Skills</label>
+      <input 
+        className="rounded-md p-2 m-2" 
+        type="text" 
+        placeholder="Skills" 
+        value={skills} 
+        onChange={(e) => setSkills(e.target.value)} 
+      />
+      <label className="pl-2">Bio</label>
+      <textarea 
+        className="rounded-md p-2 m-2" 
+        placeholder="Write your bio" 
+        value={bio} 
+        onChange={(e) => setBio(e.target.value)} 
+      />
+      <label className="pl-2">Profile Picture</label>
+      <input 
+        className="rounded-md p-2 m-2" 
+        type="file" 
+        accept="image/*" 
+        onChange={(e) => setProfilePicture(e.target.files[0])} 
+      />
+      <div className="flex self-center mt-4">
+        <button 
+          className="text-white bg-black p-2 rounded-lg" 
+          type="submit"
+        >
+          Update Profile
+        </button>
+      </div>
+    </form>
+    {error && <p className="bg-red-500 p-2 rounded-lg">{error}</p>}
+    {success && <p className="bg-green-500 p-2 rounded-lg">Profile Updated!</p>}
+  </div>
+)}
+
       
     </div>
   );

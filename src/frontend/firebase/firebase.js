@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore"; 
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDggTbal1jxN9hwwKS3Ogg1FxvDZeyLh04",
@@ -18,7 +19,37 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase services
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app)
 
+const uploadProfilePicture = async (uid, file) => {
+  try{
+    if(!uid || !file){
+      throw new Error("User ID and file are required.");
+    }
+    
+    const fileRef = ref(storage, `profilePictures/${uid}/${file.name}`);
+
+    const snapshot = await uploadBytes(fileRef, file);
+    console.log("File uploaded successfully: ", snapshot);
+
+    const downloadURL = await getDownloadURL(fileRef);
+    console.log("File available at:", downloadURL);
+
+    const userRef = doc(db, "users", uid);
+    await setDoc(
+      userRef,
+      {profilePicture: downloadURL},
+      {merge: true}
+    );
+    console.log("Profile picture URL saved to Firestore.");
+    return downloadURL;
+  }
+  catch (error) {
+    console.error("Error uploading profile picture:", error);
+    throw error;
+  }
+
+}
 // Function to fetch user info (including email)
 const getUserInfo = async (uid) => {
   try {
@@ -192,4 +223,4 @@ const fetchConnectionRequests = async (receiverUid) => {
 };
 
 // Export the functions
-export { auth, getUserInfo, updateUserBio ,updateDisplayName, updateUserInfo, updateUserField , getUsers, sendConnectionRequest, fetchConnectionRequests };
+export { auth, db, storage, uploadProfilePicture, getUserInfo, updateUserBio ,updateDisplayName, updateUserInfo, updateUserField , getUsers, sendConnectionRequest, fetchConnectionRequests };
