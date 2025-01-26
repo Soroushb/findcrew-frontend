@@ -57,11 +57,13 @@ const Search = () => {
           className="m-2 p-4 h-full flex flex-col bg-yellow-300 rounded-lg text-white cursor-pointer" 
           onClick={() => navigate(`/profile/${user?.uid}`)}
         >
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center w-52 h-52 mb-4 overflow-hidden">
             <img 
-              className="rounded-lg" 
-              src={images?.profile} 
+              className="rounded-full w-full h-full object-cover" 
+              src={user?.profilePicture ? user?.profilePicture : images?.profile} 
               alt="profile-pic" 
+            
+      
             />
           </div>
           <div className="flex items-center flex-col">

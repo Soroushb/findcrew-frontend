@@ -170,9 +170,9 @@ const MyProfile = () => {
      
       {!editMode && (
         <div className='flex flex-col'>
-          <div className='flex flex-col lg:flex-row w-screen items-center lg:p-20 p-10 justify-between'>
-            {selfProfile ? (<h1 className='text-2xl font-semibold my-2 px-14'>My Profile</h1>
-            ) : (<h1 className='text-2xl font-semibold my-2 px-14'>{name?.toUpperCase()}</h1>)}
+          <div className='flex flex-col lg:flex-row w-screen items-center lg:px-20 lg:py-10 p-10 justify-between'>
+            {selfProfile ? (<h1 className='text-4xl font-semibold my-2 px-14'>My Profile</h1>
+            ) : (<h1 className='text-4xl font-semibold my-2 px-14'>{name?.toUpperCase()}</h1>)}
             {selfProfile ? (
               <div className='flex'>
                 <div onClick={() => setEditMode(true)} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
@@ -187,8 +187,10 @@ const MyProfile = () => {
               </div>
             )}
           </div>
-          <div className='flex lg:flex-row flex-col p-10 lg:mx-20 justify-between'>
-            <img src={images?.profile} alt="profile-pic" />
+          <div className='flex overflow-hidden lg:flex-row flex-col p-10 lg:mx-20 justify-between'>
+            <div className='w-72 h-72 overflow-hidden'>
+            <img className='rounded-full object-cover w-full h-full' src={picture ? picture : images?.profile} width={300} height={300} alt="profile-pic" />
+            </div>
             <div className='lg:w-2/3 lg:mr-10 flex flex-col lg:items-start justify-center'>
               <h1 className='lg:text-2xl text-lg font-semibold my-2 bg-yellow-300 p-2 lg:px-4 rounded-lg'>Bio:</h1>
 
@@ -269,7 +271,6 @@ const MyProfile = () => {
               )}
 
             </h2>
-            <img src={picture} alt='pic'/>
             <h2 className='bg-gray-300 text-start p-3 rounded-lg w-full m-2 flex'>
             
             {!editRole ? (
