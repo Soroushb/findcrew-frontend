@@ -187,8 +187,10 @@ const MyProfile = () => {
               </div>
             )}
           </div>
+
           <div className='flex overflow-hidden lg:flex-row flex-col p-10 lg:mx-20 justify-between'>
-            <div className='w-72 h-72 overflow-hidden'>
+            <div className='w-72 h-72 relative'>
+            {selfProfile && <MdModeEdit onClick={() => handleSaveField("profilePicture")} className='absolute right-2 top-2 scale-150 text-2xl text-white bg-black p-2 rounded-full cursor-pointer'/>}
             <img className='rounded-full object-cover w-full h-full' src={picture ? picture : images?.profile} width={300} height={300} alt="profile-pic" />
             </div>
             <div className='lg:w-2/3 lg:mr-10 flex flex-col lg:items-start justify-center'>
