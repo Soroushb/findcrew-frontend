@@ -227,17 +227,17 @@ const MyProfile = () => {
                     </button>
                   )}
                 </div>)}
-              <h2 className='text-sm'>{bio?.substring(0, 250)}...</h2>
+              <h2 className='text-sm hidden'>{bio?.substring(0, 250)}...</h2>
               </div>
           </div>
           </div>
-          <div className='grid grid-cols-2 w-full'>
+          <div className='grid lg:grid-cols-2 w-full'>
           <div className='flex flex-col justify-start items-start px-20 py-10'>
             <h2 className='bg-gray-300 w-full text-start p-3 rounded-lg m-2 flex'>
               {!editName ? (
                <div className='flex justify-between w-full'> 
                 <div className='flex  mx-2'><span className='font-semibold mx-2'>Name: </span> {name ? name : ""}</div>  
-                <p onClick={() => setEditName(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>
+                {selfProfile && (<p onClick={() => setEditName(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>)}
                 </div>
               ) : (
                <>
@@ -272,7 +272,7 @@ const MyProfile = () => {
             {!editRole ? (
                <div className='flex justify-between w-full'> 
                 <div className='flex mx-2'><span className='font-semibold mx-2'>Role: </span> {role ? role : ""}</div>  
-                <p onClick={() => setEditRole(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>
+                {selfProfile && (<p onClick={() => setEditRole(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>)}
                 </div>
               ) : (
                <>
@@ -307,7 +307,7 @@ const MyProfile = () => {
             {!editLocation ? (
                <div className='flex justify-between w-full'> 
                 <div className='flex mx-2'><span className='font-semibold mx-2'>Location: </span> {location ? location : ""}</div>  
-                <p onClick={() => setEditLocation(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>
+                {selfProfile && (<p onClick={() => setEditLocation(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>)}
                 </div>
               ) : (
                <>
