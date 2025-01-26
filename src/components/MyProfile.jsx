@@ -125,6 +125,39 @@ const MyProfile = () => {
     }
   };
 
+  const uploadProfilePicture = async (file) => {
+    if (!auth.currentUser) {
+      setError("User is not authenticated.");
+      return;
+    }
+  
+    const uid = auth.currentUser.uid;
+  
+    try {
+      setError(null);
+      setSuccess(false);
+  
+      // Upload the selected file to Firebase Storage
+      const fileRef = ref(storage, `profilePictures/${uid}/${file.name}`);
+      const snapshot = await uploadBytes(fileRef, file);
+      const profilePictureURL = await getDownloadURL(snapshot.ref);
+  
+      // Update Firestore with the new profile picture URL
+      const updatedData = { profilePicture: profilePictureURL };
+      await updateUserInfo(uid, updatedData);
+  
+      // Update local state to display the new profile picture immediately
+      setPicture(profilePictureURL);
+      setUser((prevUser) => ({ ...prevUser, profilePicture: profilePictureURL }));
+  
+      setSuccess(true);
+    } catch (err) {
+      setError("Failed to update profile picture. Please try again.");
+      console.error(err);
+    }
+  };
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -190,7 +223,23 @@ const MyProfile = () => {
 
           <div className='flex overflow-hidden lg:flex-row flex-col p-10 lg:mx-20 justify-between'>
             <div className='w-72 h-72 relative'>
-            {selfProfile && <MdModeEdit onClick={() => handleSaveField("profilePicture")} className='absolute right-2 top-2 scale-150 text-2xl text-white bg-black p-2 rounded-full cursor-pointer'/>}
+            {selfProfile && <>
+              <input 
+              id='fileInput'
+              className="rounded-md p-2 m-2 hidden" 
+              type="file" 
+              accept="image/*" 
+             onChange={(e) => {
+              const file = e.target.files[0];
+              if(file){
+                setProfilePicture(file)
+                uploadProfilePicture(file)
+              }
+        
+            }} 
+              />
+              <MdModeEdit onClick={() => document.getElementById('fileInput').click()} className='absolute right-2 top-2 scale-150 text-2xl text-white bg-black p-2 rounded-full cursor-pointer'/>
+              </>}
             <img className='rounded-full object-cover w-full h-full' src={picture ? picture : images?.profile} width={300} height={300} alt="profile-pic" />
             </div>
             <div className='lg:w-2/3 lg:mr-10 flex flex-col lg:items-start justify-center'>
@@ -411,7 +460,6 @@ const MyProfile = () => {
         onChange={(e) => setBio(e.target.value)} 
       />
       
-      {/* Profile Picture Upload */}
       <label className="pl-2">Profile Picture</label>
       <input 
         className="rounded-md p-2 m-2" 
