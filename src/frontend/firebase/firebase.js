@@ -7,7 +7,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDggTbal1jxN9hwwKS3Ogg1FxvDZeyLh04",
   authDomain: "crewfind-64348.firebaseapp.com",
   projectId: "crewfind-64348",
-  storageBucket: "crewfind-64348.appspot.com", // Fixed bucket name
+  storageBucket: "crewfind-64348.firebasestorage.app", // Fixed bucket name
   messagingSenderId: "219711766919",
   appId: "1:219711766919:web:6351c0bb746ba79ae11322",
   measurementId: "G-G4W31T1ZFN",
@@ -19,47 +19,48 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase services
 const db = getFirestore(app);
 const auth = getAuth(app);
-const storage = getStorage(app)
+const storage = getStorage(app);
 
+// Function to upload profile picture and store its URL in Firestore
 const uploadProfilePicture = async (uid, file) => {
-  try{
-    if(!uid || !file){
+  try {
+    if (!uid || !file) {
       throw new Error("User ID and file are required.");
     }
-    
+
+    // Create a reference for the file in Firebase Storage
     const fileRef = ref(storage, `profilePictures/${uid}/${file.name}`);
 
+    // Upload the file to Firebase Storage
     const snapshot = await uploadBytes(fileRef, file);
     console.log("File uploaded successfully: ", snapshot);
 
+    // Get the file's download URL
     const downloadURL = await getDownloadURL(fileRef);
     console.log("File available at:", downloadURL);
 
+    // Save the URL to Firestore (User's profile)
     const userRef = doc(db, "users", uid);
-    await setDoc(
-      userRef,
-      {profilePicture: downloadURL},
-      {merge: true}
-    );
+    await setDoc(userRef, { profilePicture: downloadURL }, { merge: true });
     console.log("Profile picture URL saved to Firestore.");
+
     return downloadURL;
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Error uploading profile picture:", error);
     throw error;
   }
+};
 
-}
 // Function to fetch user info (including email)
 const getUserInfo = async (uid) => {
   try {
-    const userRef = doc(db, "users", uid);  
-    const userSnapshot = await getDoc(userRef);  
-    
+    const userRef = doc(db, "users", uid);
+    const userSnapshot = await getDoc(userRef);
+
     if (userSnapshot.exists()) {
       const userData = userSnapshot.data();
       const email = userData.email || "Email not available"; // Include email
-      return { ...userData, email }; 
+      return { ...userData, email };
     } else {
       console.log("No such document!");
       return null;
@@ -82,9 +83,9 @@ const getUsers = async (role) => {
     const querySnapshot = await getDocs(q);
 
     const users = querySnapshot.docs.map((doc) => ({
-      uid: doc.id, 
-      ...doc.data(), 
-      ...doc.data().updatedData, 
+      uid: doc.id,
+      ...doc.data(),
+      ...doc.data().updatedData,
     }));
 
     return users;
@@ -103,14 +104,13 @@ const updateUserInfo = async (uid, updatedData) => {
 
     const userRef = doc(db, "users", uid);
 
-    // Convert the location to lowercase before saving
     const dataToUpdate = {
       ...updatedData,
       location: updatedData.location.toLowerCase(),
-      bio: updatedData.bio || ""
+      bio: updatedData.bio || "",
     };
 
-    await setDoc(userRef,  dataToUpdate , { merge: true });
+    await setDoc(userRef, dataToUpdate, { merge: true });
     console.log("User information updated successfully.");
   } catch (error) {
     console.error("Error updating user info:", error);
@@ -128,7 +128,7 @@ const updateUserBio = async (uid, updatedData) => {
   }
 };
 
-
+// Function to update specific user fields
 const updateUserField = async (uid, field, value) => {
   try {
     if (!uid) {
@@ -137,9 +137,8 @@ const updateUserField = async (uid, field, value) => {
 
     const userRef = doc(db, "users", uid);
 
-    // Update the specific field
     const updateData = {
-      [field]: value
+      [field]: value,
     };
 
     await setDoc(userRef, updateData, { merge: true });
@@ -155,11 +154,11 @@ const updateDisplayName = async () => {
 
   if (user) {
     try {
-      const userRef = doc(db, "users", user.uid); // Reference to user document
+      const userRef = doc(db, "users", user.uid);
 
       await setDoc(userRef, {
-        displayName: user.displayName || "Anonymous", 
-      }, { merge: true }); 
+        displayName: user.displayName || "Anonymous",
+      }, { merge: true });
 
       console.log("User display name updated successfully.");
     } catch (error) {
@@ -182,7 +181,7 @@ const sendConnectionRequest = async (senderUid, recipientUid) => {
 
     const requestData = {
       senderUid,
-      timestamp: Date.now(), 
+      timestamp: Date.now(),
     };
 
     await setDoc(doc(connectionRequestsRef, senderUid), requestData);
@@ -203,14 +202,13 @@ const fetchConnectionRequests = async (receiverUid) => {
       querySnapshot.docs.map(async (doc) => {
         const requestData = doc.data();
 
-        // Instead of fetching the display name, directly use the user's email
         const senderEmail = requestData.senderUid
           ? (await getUserInfo(requestData.senderUid)).email
           : "Unknown User";
 
         return {
           ...requestData,
-          senderEmail, // Include sender's email
+          senderEmail,
         };
       })
     );
@@ -222,5 +220,18 @@ const fetchConnectionRequests = async (receiverUid) => {
   }
 };
 
-// Export the functions
-export { auth, db, storage, uploadProfilePicture, getUserInfo, updateUserBio ,updateDisplayName, updateUserInfo, updateUserField , getUsers, sendConnectionRequest, fetchConnectionRequests };
+// Export functions
+export {
+  auth,
+  db,
+  storage,
+  uploadProfilePicture,
+  getUserInfo,
+  updateUserBio,
+  updateDisplayName,
+  updateUserInfo,
+  updateUserField,
+  getUsers,
+  sendConnectionRequest,
+  fetchConnectionRequests,
+};

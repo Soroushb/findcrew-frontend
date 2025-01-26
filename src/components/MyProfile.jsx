@@ -16,6 +16,7 @@ const MyProfile = () => {
   const [skills, setSkills] = useState('');
   const [bio, setBio] = useState('');
   const [editBio, setEditBio] = useState(false)
+  const [picture, setPicture] = useState("")
   const [editName, setEditName] = useState(false)
   const [editRole, setEditRole] = useState(false)
   const [editLocation, setEditLocation] = useState(false)
@@ -38,6 +39,7 @@ const MyProfile = () => {
         setBio(userData?.bio);
         setName(userData?.displayName);
         setRole(userData?.role);
+        setPicture(userData?.profilePicture)
       }
     } catch (error) {
       console.error("Error fetching user info:", error);
@@ -267,6 +269,7 @@ const MyProfile = () => {
               )}
 
             </h2>
+            <img src={picture} alt='pic'/>
             <h2 className='bg-gray-300 text-start p-3 rounded-lg w-full m-2 flex'>
             
             {!editRole ? (
@@ -404,13 +407,16 @@ const MyProfile = () => {
         value={bio} 
         onChange={(e) => setBio(e.target.value)} 
       />
-      {/* <label className="pl-2">Profile Picture</label>
+      
+      {/* Profile Picture Upload */}
+      <label className="pl-2">Profile Picture</label>
       <input 
         className="rounded-md p-2 m-2" 
         type="file" 
         accept="image/*" 
         onChange={(e) => setProfilePicture(e.target.files[0])} 
-      /> */}
+      />
+      
       <div className="flex self-center mt-4">
         <button 
           className="text-white bg-black p-2 rounded-lg" 
