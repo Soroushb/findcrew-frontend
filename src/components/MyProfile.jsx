@@ -243,48 +243,51 @@ const MyProfile = () => {
               </>}
             <img className='rounded-full object-cover w-full h-full' src={picture ? picture : images?.profile} width={300} height={300} alt="profile-pic" />
             </div>
-            <div className='lg:w-2/3 lg:mr-10 flex flex-col lg:items-start justify-center'>
+            <div className='lg:w-2/3 lg:h-72 lg:mr-10 flex flex-col lg:items-start justify-center'>
               <h1 className='lg:text-2xl text-lg font-semibold my-2 bg-yellow-300 p-2 lg:px-4 rounded-lg'>Bio:</h1>
 
-              <div className='border border-yellow-500 lg:w-5/6  rounded-lg p-4'>
-              {editBio ? (
-                <div>
-                <textarea
-                  className="w-full border p-2 rounded-md"
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  required
-                />
-                <div className="flex justify-end mt-2">
-                  <button
-                    className="text-white bg-green-500 px-4 py-1 rounded-lg mr-2"
-                    onClick={()=> handleSaveField("bio", bio)}
-                  >
-                    Save
-                  </button>
-                  <button
-                    className="text-white bg-gray-500 px-4 py-1 rounded-lg"
-                    onClick={() => setEditBio(false)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-              ) : (
-
-              <div className="flex justify-between items-center">
-                  <h2 className="text-sm">{bio?.substring(0,250) || 'No bio available.'}</h2>
-                  {selfProfile && (
-                    <button
-                      className=" ml-4"
-                      onClick={() => setEditBio(true)}
-                    >
-                      <MdModeEdit className='scale-150'/>
-                    </button>
-                  )}
-                </div>)}
-              <h2 className='text-sm hidden'>{bio?.substring(0, 250)}...</h2>
-              </div>
+              <div className='border container border-yellow-500 lg:w-5/6 h-full rounded-lg p-4'>
+  {editBio ? (
+    <div className="w-full">
+      <textarea
+        className="w-full border p-2 rounded-md"
+        value={bio}
+        maxLength={800}
+        rows={5}
+        placeholder="Write your bio here..."
+        onChange={(e) => setBio(e.target.value)}
+        required
+      />
+      <div className="text-right text-sm text-gray-500 mt-1">
+        {bio.length}/800 characters
+      </div>
+      <div className="flex justify-end mt-2">
+        <button
+          className="text-white bg-green-500 px-4 py-1 rounded-lg mr-2"
+          onClick={() => handleSaveField("bio", bio)}
+        >
+          Save
+        </button>
+        <button
+          className="text-white bg-gray-500 px-4 py-1 rounded-lg"
+          onClick={() => setEditBio(false)}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  ) : (
+    <div className="flex justify-between w-full p-6 items-center">
+      <h2 className="text-sm break-words w-full">{bio?.substring(0, 800) || 'No bio available.'}</h2>
+      {selfProfile && (
+        <button className="ml-4" onClick={() => setEditBio(true)}>
+          <MdModeEdit className="scale-150" />
+        </button>
+      )}
+    </div>
+  )}
+  <h2 className='text-sm hidden'>{bio?.substring(0, 250)}...</h2>
+</div>
           </div>
           </div>
           <div className='grid lg:grid-cols-2 w-full'>
