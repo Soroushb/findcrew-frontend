@@ -74,6 +74,7 @@ const MyProfile = () => {
     }
     console.log("Self Profile:", id === user?.uid);
     fetchUserInfo();
+
   }, [id, user]); 
 
   useEffect(() => {
@@ -93,6 +94,7 @@ const MyProfile = () => {
   }, [user]);
   
 
+
   const handleSaveField = async (field, value) => {
     try { 
       await updateUserField(user?.uid, field ,value);
@@ -111,7 +113,7 @@ const MyProfile = () => {
 
 
 
-  const handleConnect = async () => {
+  const handleConnect = async  () => {
     try {
       if (user?.uid && id) {
         await sendConnectionRequest(user?.uid, id);
@@ -125,6 +127,7 @@ const MyProfile = () => {
     }
   };
 
+  
   const uploadProfilePicture = async (file) => {
     if (!auth.currentUser) {
       setError("User is not authenticated.");
@@ -137,25 +140,23 @@ const MyProfile = () => {
       setError(null);
       setSuccess(false);
   
-      // Upload the selected file to Firebase Storage
+      // Upload profile picture
       const fileRef = ref(storage, `profilePictures/${uid}/${file.name}`);
       const snapshot = await uploadBytes(fileRef, file);
       const profilePictureURL = await getDownloadURL(snapshot.ref);
   
       // Update Firestore with the new profile picture URL
-      const updatedData = { profilePicture: profilePictureURL };
-      await updateUserInfo(uid, updatedData);
+      await updateUserField(uid, "profilePicture", profilePictureURL);
   
-      // Update local state to display the new profile picture immediately
+      // Update the local state
       setPicture(profilePictureURL);
-      setUser((prevUser) => ({ ...prevUser, profilePicture: profilePictureURL }));
-  
       setSuccess(true);
     } catch (err) {
       setError("Failed to update profile picture. Please try again.");
       console.error(err);
     }
   };
+  
   
 
   const handleSubmit = async (e) => {

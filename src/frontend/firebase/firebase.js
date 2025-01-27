@@ -106,8 +106,8 @@ const updateUserInfo = async (uid, updatedData) => {
 
     const dataToUpdate = {
       ...updatedData,
-      location: updatedData.location.toLowerCase(),
-      bio: updatedData.bio || "",
+      location: updatedData?.location.toLowerCase() || "",
+      bio: updatedData?.bio || "",
     };
 
     await setDoc(userRef, dataToUpdate, { merge: true });
