@@ -22,20 +22,20 @@ const Navbar = () => {
       {/* Desktop Navbar */}
       <div className="hidden lg:flex justify-between bg-yellow-400 p-6">
         <div className="flex items-center space-x-10">
-          <Link to="/" className="font-semibold text-3xl text-gray-800 hover:text-gray-600">
+          <Link to="/" className="font-semibold text-3xl text-black hover:text-white">
             CrewFind
           </Link>
-          <Link to="/search" className="bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors">
+          <Link to="/search" className="bg-black text-white py-2 px-4 rounded-md hover:bg-white hover:text-black transition-colors">
             Search
           </Link>
         </div>
         <div className="flex items-center space-x-4">
           {!user ? (
             <>
-              <Link to="/signup" className="bg-white text-black py-2 px-4 rounded-md hover:bg-gray-100 transition-colors">
+              <Link to="/signup" className="bg-white text-black py-2 px-4 rounded-md hover:bg-black hover:text-white  transition-colors">
                 Register
               </Link>
-              <Link to="/signin" className="bg-stone-800 text-white py-2 px-4 rounded-md hover:bg-stone-700 transition-colors">
+              <Link to="/signin" className="bg-white text-black py-2 px-4 rounded-md hover:bg-black hover:text-white transition-colors">
                 Login
               </Link>
             </>
@@ -45,7 +45,7 @@ const Navbar = () => {
               <div 
                 onClick={() => navigate(`profile/${user.uid}`)} 
                 className="bg-black text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl hover:bg-gray-700 cursor-pointer">
-                {user?.displayName.charAt(0)}
+                {user?.displayName.charAt(0).toUpperCase()}
               </div>
             </div>
           )}
@@ -60,7 +60,7 @@ const Navbar = () => {
           </Link>
           <div className="relative">
             <IoIosMenu 
-              className="text-3xl text-gray-800 hover:text-gray-600 cursor-pointer"
+              className="text-3xl text-black hover:text-white cursor-pointer"
               onClick={() => setMenuOpen(!menuOpen)} 
             />
             <motion.div

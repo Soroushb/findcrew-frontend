@@ -16,6 +16,7 @@ const MyProfile = () => {
   const [skills, setSkills] = useState('');
   const [bio, setBio] = useState('');
   const [editBio, setEditBio] = useState(false)
+  const [filter, setFilter] = useState("")
   const [picture, setPicture] = useState("")
   const [editName, setEditName] = useState(false)
   const [editRole, setEditRole] = useState(false)
@@ -29,6 +30,59 @@ const MyProfile = () => {
   const { id } = useParams();
   const [requestNames, setRequestNames] = useState([]);
   const navigate = useNavigate()
+
+  const filmIndustryRoles = [
+    "Director",
+    "Producer",
+    "Executive Producer",
+    "Screenwriter",
+    "Actor/Actress",
+    "Casting Director",
+    "Cinematographer",
+    "Camera Operator",
+    "Gaffer",
+    "Best Boy Electric",
+    "Lighting Technician",
+    "Boom Operator",
+    "Sound Mixer",
+    "Sound Designer",
+    "Foley Artist",
+    "Music Composer",
+    "Production Designer",
+    "Art Director",
+    "Set Decorator",
+    "Prop Master",
+    "Costume Designer",
+    "Wardrobe Supervisor",
+    "Hair Stylist",
+    "Makeup Artist",
+    "Special Effects Makeup Artist",
+    "Line Producer",
+    "Production Coordinator",
+    "1st Assistant Director",
+    "2nd Assistant Director",
+    "Production Assistant (PA)",
+    "Film Editor",
+    "Colorist",
+    "VFX Supervisor",
+    "VFX Artist",
+    "Motion Graphics Artist",
+    "Sound Editor",
+    "Music Editor",
+    "Special Effects Supervisor",
+    "Stunt Coordinator",
+    "Stunt Performer",
+    "Script Supervisor",
+    "Location Manager",
+    "Location Scout",
+    "Storyboard Artist",
+    "Unit Production Manager",
+    "Publicist",
+    "Marketing Coordinator",
+    "Studio Executive",
+    "Set Photographer",
+    "Choreographer"
+  ];
 
   const fetchUserInfo = async () => {
     try {
@@ -336,12 +390,20 @@ const MyProfile = () => {
               ) : (
                <>
                 <div className='w-full'>
-                <input
-                  className="w-full border p-2 rounded-md"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  required
-                />
+                <select
+              className="rounded-xl bg-gray-200 p-2 m-4 lg:w-1/2"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a role...
+              </option>
+              {filmIndustryRoles.map((role, index) => (
+                <option key={index} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select> 
                 <div className="flex justify-end mt-2">
                   <button
                     className="text-white bg-green-500 px-4 py-1 rounded-lg mr-2"
@@ -433,13 +495,20 @@ const MyProfile = () => {
       onSubmit={handleSubmit}
     >
       <label className="pl-2">Role</label>
-      <input 
-        className="rounded-md p-2 m-2" 
-        type="text" 
-        placeholder="Role" 
-        value={role} 
-        onChange={(e) => setRole(e.target.value.toLowerCase())} 
-      />
+      <select
+              className="rounded-xl bg-gray-200 p-2 m-4 lg:w-1/2"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a role...
+              </option>
+              {filmIndustryRoles.map((role, index) => (
+                <option key={index} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
       <label className="pl-2">Location</label>
       <input 
         className="rounded-md p-2 m-2" 

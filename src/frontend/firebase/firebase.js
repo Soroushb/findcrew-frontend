@@ -71,14 +71,13 @@ const getUserInfo = async (uid) => {
   }
 };
 
-// Function to get all users in a specific location
 const getUsers = async (role) => {
   try {
     const usersRef = collection(db, "users");
 
     const lowercasedRole = role.toLowerCase();
 
-    const q = query(usersRef, where("updatedData.role", "==", lowercasedRole));
+    const q = query(usersRef, where("role", "==", role));
 
     const querySnapshot = await getDocs(q);
 
