@@ -45,7 +45,7 @@ const Navbar = () => {
               <div 
                 onClick={() => navigate(`profile/${user.uid}`)} 
                 className="bg-black text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl hover:bg-gray-700 cursor-pointer">
-                {user?.displayName.charAt(0).toUpperCase()}
+                {user?.displayName ? user?.displayName.charAt(0).toUpperCase() : ""}
               </div>
             </div>
           )}

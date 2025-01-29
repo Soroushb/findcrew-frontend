@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../UserContext';
-import { uploadProfilePicture, updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fetchConnectionRequests } from '../frontend/firebase/firebase';
+import { updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fetchConnectionRequests } from '../frontend/firebase/firebase';
 import images from '../constants/images';
 import { MdModeEdit } from "react-icons/md";
 import { useParams } from 'react-router-dom';
