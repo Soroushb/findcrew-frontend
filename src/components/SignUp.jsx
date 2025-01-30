@@ -19,6 +19,8 @@ function SignUp() {
     const [step, setStep] = useState(1);
     const [error, setError] = useState('');
     const [bio, setBio] = useState('')
+    const [location, setLocation] = useState("")
+    const [username, setUsername] = useState("")
   
     const filmIndustryRoles = [
       "Director",
@@ -115,6 +117,7 @@ function SignUp() {
                       email: user.email,
                       uid: user.uid,
                     });
+                    setUsername(displayName)
                     setError(''); 
                     setStep(2)
                   })
@@ -151,10 +154,17 @@ function SignUp() {
 
       e.preventDefault();
       handleSaveField("role", role)
+      handleSaveField("displayName", username)
+      setStep(3)
+    }
 
-      navigate()
+    const handleStepThree = (e) => {
+      e.preventDefault();
+      handleSaveField("bio", bio)
+      handleSaveField("location", location)
+      setError("")
       navigate(`/profile/${newUser?.uid}`)
-
+      
     }
   
     return (
@@ -229,6 +239,33 @@ function SignUp() {
               ))}
             </select>
             <div></div>
+            <div className='flex self-center mt-4'>
+              <button className='text-white bg-black p-2 rounded-lg' type="submit">Next</button>
+            </div>
+          </form>
+          )}
+
+          {step === 3 && (
+            <form className='flex flex-col items-center' onSubmit={handleStepThree}>
+            <label className='pl-2'>Where do you live?</label>
+            <input
+              className=""
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+            <div>
+            <label className='pl-2'>Write your Bio</label>
+            <textarea
+             className="w-full border p-2 rounded-md"
+             value={bio}
+            maxLength={800}
+             rows={5}
+              placeholder="Write your bio here..."
+              onChange={(e) => setBio(e.target.value)}
+            required
+            />
+
+            </div>
             <div className='flex self-center mt-4'>
               <button className='text-white bg-black p-2 rounded-lg' type="submit">Next</button>
             </div>

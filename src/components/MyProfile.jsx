@@ -383,8 +383,9 @@ const MyProfile = () => {
             <h2 className='bg-gray-300 text-start p-3 rounded-lg w-full m-2 flex'>
             
             {!editRole ? (
+              
                <div className='flex justify-between w-full'> 
-                <div className='flex mx-2'><span className='font-semibold mx-2'>Role: </span> {role ? role : ""}</div>  
+                <div className='flex text-small mx-2'><span className='font-semibold mx-2'>Role: </span> {role ? role : ""}</div>  
                 {selfProfile && (<p onClick={() => setEditRole(true)} className='flex scale-125 mt-1'><MdModeEdit/></p>)}
                 </div>
               ) : (

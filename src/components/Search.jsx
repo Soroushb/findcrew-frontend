@@ -119,7 +119,7 @@ const Search = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1 }}
                     key={index}
-                    className="m-2 p-4 h-full flex flex-col bg-yellow-300 rounded-lg text-white cursor-pointer"
+                    className="m-2 hover:bg-yellow-200 p-4 h-full flex flex-col bg-yellow-300 rounded-lg text-white cursor-pointer"
                     onClick={() => navigate(`/profile/${user?.uid}`)}
                   >
                     <div className="flex justify-center w-48 h-48 mb-4 overflow-hidden">
