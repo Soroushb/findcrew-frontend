@@ -173,7 +173,12 @@ function SignUp() {
         initial={{opacity: 0, y: -50}}
         animate={{opacity: 1, y: 0}}
         transition={{ duration: 1}}>
-        <div className='m-20 bg-gray-300 p-12 rounded-lg flex flex-col justify-start'>
+        <div className='m-20 border-gray-300 border-2 p-12 rounded-lg flex flex-col justify-start'>
+        <div className='text-6xl bottom-0'>
+          <span className={`hover:cursor-pointer ${step === 1 || step === 2 || step === 3 ? 'text-yellow-600' : ''}`}>.</span>
+          <span className={`${step === 2 || step === 3 ? 'text-yellow-600' : ''}`}>.</span>
+          <span className={`${step === 3 ? 'text-yellow-600' : ''}`}>.</span>
+          </div>
           <h2 className='text-2xl m-2 font-semibold mb-10'>Sign Up</h2>
 
           {step === 1 && (
@@ -249,14 +254,14 @@ function SignUp() {
             <form className='flex flex-col items-center' onSubmit={handleStepThree}>
             <label className='pl-2'>Where do you live?</label>
             <input
-              className=""
+              className="p-2 rounded-md m-2 border-2 border-gray-200"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
             />
             <div>
             <label className='pl-2'>Write your Bio</label>
             <textarea
-             className="w-full border p-2 rounded-md"
+             className="w-full border-2 border-gray-200 p-2 m-2 rounded-md"
              value={bio}
             maxLength={800}
              rows={5}
@@ -274,7 +279,7 @@ function SignUp() {
           
           <div className='m-2 text-white'>
             {error && <p className='bg-red-500 p-2 rounded-lg'>{error}</p>}
-            {created && <p className='bg-green-500 p-2 rounded-lg'>User Created!</p>}
+            {/* {created && <p className='bg-green-500 p-2 rounded-lg'>User Created!</p>} */}
           </div>
           <div>
             <div className='text-md'>
