@@ -269,14 +269,16 @@ const MyProfile = () => {
               </div>
             ) : (
               <div className='flex'>
-                <div onClick={handleConnect} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
+                {user && (<div onClick={handleConnect} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
                   Connect
                 </div>
+                )
+                }
               </div>
             )}
           </div>
 
-          <div className='flex overflow-hidden lg:flex-row flex-col p-10 lg:mx-20 justify-between'>
+          <div className='flex overflow-hidden lg:flex-row flex-col p-10 items-center lg:mx-14 justify-between'>
             <div className='w-72 h-72 relative'>
             {selfProfile && <>
               <input 
@@ -298,9 +300,9 @@ const MyProfile = () => {
             <img className='rounded-full object-cover w-full h-full' src={picture ? picture : images?.profile} width={300} height={300} alt="profile-pic" />
             </div>
             <div className='lg:w-2/3 lg:h-72 lg:mr-10 flex flex-col lg:items-start justify-center'>
-              <h1 className='lg:text-2xl text-lg font-semibold my-2 bg-yellow-300 p-2 lg:px-4 rounded-lg'>Bio:</h1>
+              <h1 className='lg:text-2xl text-lg font-semibold my-2 border border-yellow-300 p-2 lg:px-4 rounded-lg'>Bio:</h1>
 
-              <div className='border container border-yellow-500 lg:w-5/6 h-full rounded-lg p-4'>
+              <div className='border container border-gray-300 lg:w-5/6 h-full rounded-lg p-4'>
   {editBio ? (
     <div className="w-full">
       <textarea

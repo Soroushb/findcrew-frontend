@@ -32,10 +32,10 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           {!user ? (
             <>
-              <Link to="/signup" className="bg-white text-black py-2 px-4 rounded-md hover:bg-black hover:text-white  transition-colors">
+              <Link to="/signup" className="bg-black text-white py-2 px-4 rounded-md hover:scale-110 transition-colors">
                 Register
               </Link>
-              <Link to="/signin" className="bg-white text-black py-2 px-4 rounded-md hover:bg-black hover:text-white transition-colors">
+              <Link to="/signin" className="bg-white text-black py-2 px-4 rounded-md hover:scale-110 transition-colors">
                 Login
               </Link>
             </>

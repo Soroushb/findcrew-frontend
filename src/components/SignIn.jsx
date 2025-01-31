@@ -65,7 +65,7 @@ function SignIn() {
         />
         <div></div>
         <div className='flex self-center mt-4'>
-        <button className='text-white bg-black p-2 rounded-lg' type="submit">Sign In</button>
+        <button className='text-white bg-black p-2  hover:scale-110 rounded-lg' type="submit">Sign In</button>
         </div>
       </form>
       <div className='m-2 text-white'>
@@ -76,7 +76,7 @@ function SignIn() {
                 Don't have an account?
             </div>
             <Link to="/signup">
-            <button className='text-white bg-gray-500 p-1 min-w-20 mt-2 rounded-lg' type="submit">Sign Up</button>
+            <button className='text-black border border-gray-500 hover:scale-110 p-1 text-sm min-w-20 mt-2 rounded-lg' type="submit">Sign Up</button>
             </Link>
         </div>
 
