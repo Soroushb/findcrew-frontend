@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../UserContext';
-import { updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fetchConnectionRequests } from '../frontend/firebase/firebase';
+import { updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fetchConnectionRequests, acceptConnectionRequest, rejectConnectionRequest, fetchConnections } from '../frontend/firebase/firebase';
 import images from '../constants/images';
 import { MdModeEdit } from "react-icons/md";
 import { useParams } from 'react-router-dom';
@@ -24,6 +24,8 @@ const MyProfile = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [connectionRequests, setConnectionRequests] = useState([]); 
+  const [connections, setConnections] = useState([])
+  const [connectionNames, setConnectionNames] = useState([])
   const [name, setName] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [selfProfile, setSelfProfile] = useState(false);
@@ -101,6 +103,10 @@ const MyProfile = () => {
   };
 
   useEffect(() => {
+    console.log("Connections:", connections); // Check the structure before mapping
+  }, [connections]);
+
+  useEffect(() => {
 
     const fetchAllRequestUsernames = async () => {
       try {
@@ -119,6 +125,27 @@ const MyProfile = () => {
     }
 
   }, [connectionRequests]);
+
+  useEffect(() => {
+    const fetchAllConnectionUsernames = async () => {
+      try {
+          if (connections.length === 0) return;
+          
+          const users = await Promise.all(
+              connections.map((connection) => getUserInfo(connection.uid))
+          );
+  
+          console.log("Fetched user data:", users); // Check if displayName is available
+  
+          setConnectionNames(users.map((user) => user?.displayName || "Unknown"));
+      } catch (err) {
+          console.error("Error fetching usernames:", err);
+      }
+  };
+  
+    fetchAllConnectionUsernames();
+    console.log(connectionNames)
+  }, [connections]);
 
   useEffect(() => {
     if (id && user?.uid) {
@@ -147,6 +174,24 @@ const MyProfile = () => {
     fetchRequests();
   }, [user]);
   
+
+  useEffect(() => {
+    
+    const getConnections = async () => {
+      if (user?.uid) {
+        try {
+          const connections = await fetchConnections(user.uid);
+          console.log(connections); 
+          setConnections(connections);
+        } catch (error) {
+          console.error("Error fetching connection requests:", error);
+        }
+      }
+    };
+  
+    getConnections();
+    console.log(connections)
+  }, [user]);
 
 
   const handleSaveField = async (field, value) => {
@@ -300,7 +345,7 @@ const MyProfile = () => {
             <img className='rounded-full object-cover w-full h-full' src={picture ? picture : images?.profile} width={300} height={300} alt="profile-pic" />
             </div>
             <div className='lg:w-2/3 lg:h-72 lg:mr-10 flex flex-col lg:items-start justify-center'>
-              <h1 className='lg:text-2xl text-lg font-semibold my-2 border border-yellow-300 p-2 lg:px-4 rounded-lg'>Bio:</h1>
+              <h1 className='lg:text-2xl text-lg font-semibold my-2  p-2 lg:px-4 rounded-lg'>Bio:</h1>
 
               <div className='border container border-gray-300 lg:w-5/6 h-full rounded-lg p-4'>
   {editBio ? (
@@ -464,18 +509,50 @@ const MyProfile = () => {
           </div>
         <div className='p-10'>
         {selfProfile && (
+          <div className='flex'>
         <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
         <h2 className='text-xl'>Connection Requests</h2>
-        {requestNames?.map((user, index) => (
+        {connectionNames.length > 0 ? (connectionNames?.map((user, index) => (
+        <div className='flex justify-between'>
         <div
           key={index}
-          className="hover:cursor-pointer hover:underline"
-          onClick={() => navigate(`/profile/${connectionRequests[index]?.senderUid}`)}
+          className="hover:cursor-pointer hover:underline mt-2"
+          onClick={() => navigate(`/profile/${connections[index]?.senderUid}`)}
         >
         {user}
       </div>
-      ))}
+      <div className='flex m-2'>
+        <div onClick={() => acceptConnectionRequest(id , connectionRequests[index]?.senderUid )} className='text-xs bg-black rounded-md hover:cursor-pointer m-1 p-1'>Accept</div>
+        <div className='text-xs bg-white text-black rounded-md  hover:cursor-pointer m-1 p-1'>Reject</div>
       </div>
+      </div>
+      ))):(
+      <div className='text-sm'>
+        No Connection Requests
+      </div>)}
+      </div>
+      <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
+      <h2 className='text-xl'>Connections</h2>
+      {requestNames.length > 0 ? (requestNames?.map((user, index) => (
+      <div className='flex justify-between'>
+      <div
+        key={index}
+        className="hover:cursor-pointer hover:underline mt-2"
+        onClick={() => navigate(`/profile/${connectionRequests[index]?.senderUid}`)}
+      >
+      {user}
+    </div>
+    <div className='flex m-2'>
+      <div onClick={() => acceptConnectionRequest(id , connectionRequests[index]?.senderUid )} className='text-xs bg-black rounded-md hover:cursor-pointer m-1 p-1'>Accept</div>
+      <div className='text-xs bg-white text-black rounded-md  hover:cursor-pointer m-1 p-1'>Reject</div>
+    </div>
+    </div>
+    ))):(
+    <div className='text-sm'>
+      No Connections
+    </div>)}
+    </div>
+    </div>
       )}
           </div>
         </div>

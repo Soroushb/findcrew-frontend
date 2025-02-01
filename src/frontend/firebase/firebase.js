@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore"; 
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore"; 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const firebaseConfig = {
@@ -51,7 +51,45 @@ const uploadProfilePicture = async (uid, file) => {
   }
 };
 
-// Function to fetch user info (including email)
+const acceptConnectionRequest = async (receiverUid, senderUid) => {
+  try {
+    if (!receiverUid || !senderUid) {
+      throw new Error("Both sender and receiver UIDs are required.");
+    }
+
+    const recipientRef = doc(db, "users", receiverUid);
+    const senderRef = doc(db, "users", senderUid);
+
+    // Add sender to receiver's connections
+    await setDoc(doc(recipientRef, "connections", senderUid), { uid: senderUid });
+
+    // Add receiver to sender's connections
+    await setDoc(doc(senderRef, "connections", receiverUid), { uid: receiverUid });
+
+    // Remove the request from connectionRequests
+    await deleteDoc(doc(db, "users", receiverUid, "connectionRequests", senderUid));
+
+    console.log("Connection request accepted.");
+  } catch (error) {
+    console.error("Error accepting connection request:", error);
+  }
+};
+
+const rejectConnectionRequest = async (receiverUid, senderUid) => {
+  try {
+    if (!receiverUid || !senderUid) {
+      throw new Error("Both sender and receiver UIDs are required.");
+    }
+
+    await deleteDoc(doc(db, "users", receiverUid, "connectionRequests", senderUid));
+
+    console.log("Connection request rejected.");
+  } catch (error) {
+    console.error("Error rejecting connection request:", error);
+  }
+};
+
+
 const getUserInfo = async (uid) => {
   try {
     const userRef = doc(db, "users", uid);
@@ -191,6 +229,33 @@ const sendConnectionRequest = async (senderUid, recipientUid) => {
   }
 };
 
+const fetchConnections = async (receiverUid) => {
+  try{
+    const connectionsRef = collection(db, "users", receiverUid, "connections");
+    const querySnapshot = await getDocs(connectionsRef);
+
+    const connections = await Promise.all(
+      querySnapshot.docs.map(async (doc) => {
+        const connection = doc.data()
+
+        const senderEmail = connection.senderUid
+          ? (await getUserInfo(connection.senderUid)).email
+          : "Unknown User";
+
+        return {
+          ...connection,
+          senderEmail,
+        };
+      })
+    )
+
+    return connections
+  }catch (err) {
+    console.error("Error fetching connection requests:", err);
+    throw err;
+  }
+}
+
 // Function to fetch connection requests
 const fetchConnectionRequests = async (receiverUid) => {
   try {
@@ -233,4 +298,7 @@ export {
   getUsers,
   sendConnectionRequest,
   fetchConnectionRequests,
+  acceptConnectionRequest,
+  rejectConnectionRequest,
+  fetchConnections
 };

@@ -22,7 +22,7 @@ const Navbar = () => {
       {/* Desktop Navbar */}
       <div className="hidden lg:flex justify-between bg-yellow-400 p-6">
         <div className="flex items-center space-x-10">
-          <Link to="/" className="font-semibold text-3xl text-black hover:text-white">
+          <Link to="/" className="font-semibold text-2xl text-black hover:text-white">
             CrewFind
           </Link>
           <Link to="/search" className="bg-black text-white py-2 px-4 rounded-md hover:bg-white hover:text-black transition-colors">
