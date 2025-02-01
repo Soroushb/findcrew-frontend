@@ -306,14 +306,23 @@ const sendMessage = async (chatId, senderUid, messageText) => {
  * 🔹 Listen for Messages (Real-time Updates)  
  */
 const listenForMessages = (chatId, callback) => {
-  if (!chatId) return console.error("Chat ID is required.");
+  if (!chatId) {
+    console.error("Chat ID is required.");
+    return;
+  }
+
+  // Ensure callback is a function
+  if (typeof callback !== "function") {
+    console.error("Callback is not a function.");
+    return;
+  }
 
   const messagesRef = collection(db, "chats", chatId, "messages");
   const q = query(messagesRef, orderBy("timestamp", "asc"));
 
   return onSnapshot(q, (querySnapshot) => {
     const messages = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    callback(messages);
+    callback(messages);  // Call the callback function with the messages
   });
 };
 

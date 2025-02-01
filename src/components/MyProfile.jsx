@@ -4,6 +4,7 @@ import { updateUserInfo, getUserInfo, updateUserField, sendConnectionRequest, fe
 import images from '../constants/images';
 import { MdModeEdit } from "react-icons/md";
 import { useParams } from 'react-router-dom';
+import ChatBox from './ChatBox';
 import { useNavigate } from 'react-router-dom';
 import { auth, storage } from "../frontend/firebase/firebase"; // Adjust the import path based on your directory structure
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Firebase storage utilities
@@ -555,6 +556,7 @@ const MyProfile = () => {
         </div>
         </div>
       )}
+      {!selfProfile && <ChatBox receiver={{ uid: id }} />}
       
       {editMode && (
   <div className="m-20 bg-gray-300 p-12 rounded-lg relative flex flex-col justify-start">
