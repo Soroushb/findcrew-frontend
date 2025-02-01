@@ -512,12 +512,12 @@ const MyProfile = () => {
           <div className='flex'>
         <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
         <h2 className='text-xl'>Connection Requests</h2>
-        {connectionNames.length > 0 ? (connectionNames?.map((user, index) => (
+        {requestNames.length > 0 ? (requestNames?.map((user, index) => (
         <div className='flex justify-between'>
         <div
           key={index}
           className="hover:cursor-pointer hover:underline mt-2"
-          onClick={() => navigate(`/profile/${connections[index]?.senderUid}`)}
+          onClick={() => navigate(`/profile/${connectionRequests[index]?.senderUid}`)}
         >
         {user}
       </div>
@@ -533,7 +533,7 @@ const MyProfile = () => {
       </div>
       <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
       <h2 className='text-xl'>Connections</h2>
-      {requestNames.length > 0 ? (requestNames?.map((user, index) => (
+      {connectionNames.length > 0 ? (connectionNames?.map((user, index) => (
       <div className='flex justify-between'>
       <div
         key={index}
@@ -542,10 +542,7 @@ const MyProfile = () => {
       >
       {user}
     </div>
-    <div className='flex m-2'>
-      <div onClick={() => acceptConnectionRequest(id , connectionRequests[index]?.senderUid )} className='text-xs bg-black rounded-md hover:cursor-pointer m-1 p-1'>Accept</div>
-      <div className='text-xs bg-white text-black rounded-md  hover:cursor-pointer m-1 p-1'>Reject</div>
-    </div>
+        
     </div>
     ))):(
     <div className='text-sm'>

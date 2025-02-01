@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore"; 
+import { getFirestore, doc, orderBy, onSnapshot, addDoc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore"; 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const firebaseConfig = {
@@ -284,6 +284,58 @@ const fetchConnectionRequests = async (receiverUid) => {
   }
 };
 
+const sendMessage = async (chatId, senderUid, messageText) => {
+  try {
+    if (!chatId || !senderUid || !messageText) {
+      throw new Error("Chat ID, sender UID, and message are required.");
+    }
+
+    const messagesRef = collection(db, "chats", chatId, "messages");
+
+    await addDoc(messagesRef, {
+      senderUid,
+      messageText,
+      timestamp: Date.now(),
+    });
+  } catch (error) {
+    console.error("Error sending message:", error);
+  }
+};
+
+/**  
+ * 🔹 Listen for Messages (Real-time Updates)  
+ */
+const listenForMessages = (chatId, callback) => {
+  if (!chatId) return console.error("Chat ID is required.");
+
+  const messagesRef = collection(db, "chats", chatId, "messages");
+  const q = query(messagesRef, orderBy("timestamp", "asc"));
+
+  return onSnapshot(q, (querySnapshot) => {
+    const messages = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    callback(messages);
+  });
+};
+
+/**  
+ * 🔹 Create a Chat Room  
+ */
+const createChatRoom = async (user1, user2) => {
+  try {
+    const chatId = [user1, user2].sort().join("_"); // Unique ID based on users
+    const chatRef = doc(db, "chats", chatId);
+    const chatSnapshot = await getDoc(chatRef);
+
+    if (!chatSnapshot.exists()) {
+      await setDoc(chatRef, { participants: [user1, user2], createdAt: Date.now() });
+    }
+
+    return chatId;
+  } catch (error) {
+    console.error("Error creating chat room:", error);
+  }
+};
+
 // Export functions
 export {
   auth,
@@ -300,5 +352,8 @@ export {
   fetchConnectionRequests,
   acceptConnectionRequest,
   rejectConnectionRequest,
-  fetchConnections
+  fetchConnections,
+  sendMessage,
+  listenForMessages,
+  createChatRoom
 };
