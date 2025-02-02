@@ -34,11 +34,16 @@ const ChatBox = ({ receiver }) => {
   return (
     <div className="border border-gray-300 rounded-lg p-4 w-full max-w-lg">
       <div className="h-64 overflow-y-auto mb-4 p-2 border-b">
-        {messages.map((msg) => (
+        {messages.map((msg) => {
+
+          console.log(msg?.sender + user?.uid)
+          
+
+          return (
           <div key={msg.id} className={`p-2 my-1 rounded ${msg.sender === user.uid ? 'bg-blue-200 text-right' : 'bg-gray-200'}`}>
             {msg.messageText}
           </div>
-        ))}
+        )})}
       </div>
 
       <div className="flex">

@@ -28,6 +28,7 @@ const MyProfile = () => {
   const [connectionRequests, setConnectionRequests] = useState([]); 
   const [connections, setConnections] = useState([])
   const [connectionNames, setConnectionNames] = useState([])
+  const [isConnected, setIsConnected] = useState(false)
   const [name, setName] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [selfProfile, setSelfProfile] = useState(false);
@@ -88,6 +89,25 @@ const MyProfile = () => {
     "Choreographer"
   ];
 
+
+  useEffect(() => {
+    console.log("Checking connection with ID:", id);
+    console.log("Connections list:", connections);
+    const checkIfConnected = () => {
+      const connected = connections.some(
+        (connection) => connection.uid === id
+      );
+      setIsConnected(connected);
+    };
+  
+    if (connections.length > 0) {
+      checkIfConnected();
+    }
+
+    console.log(isConnected)
+  }, [connections, id]);
+  
+
   const fetchUserInfo = async () => {
     try {
       const userData = await getUserInfo(id);
@@ -128,6 +148,7 @@ const MyProfile = () => {
 
   }, [connectionRequests]);
 
+
   useEffect(() => {
     const fetchAllConnectionUsernames = async () => {
       try {
@@ -155,7 +176,6 @@ const MyProfile = () => {
     } else {
       setSelfProfile(false);
     }
-    console.log("Self Profile:", id === user?.uid);
     fetchUserInfo();
 
   }, [id, user]); 
@@ -317,16 +337,30 @@ const MyProfile = () => {
             ) : (
               <div className='flex'>
                 {user && (
-                <div className='flex'>
-                <div onClick={handleConnect} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
-                  Connect
-                </div>
-                <div onClick={() => {setOpenChat(!openChat)}} className='bg-black mx-2 hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
-                  Chat
-                </div>
-                </div>
-                )
-                }
+  <div className='flex'>
+    {isConnected ? (
+      <div className='bg-green-500 text-white p-2 h-full rounded-lg'>
+        Connected
+      </div>
+    ) : (
+      <div
+        onClick={handleConnect}
+        className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'
+      >
+        Connect
+      </div>
+    )}
+    <div
+      onClick={() => {
+        setOpenChat(!openChat);
+      }}
+      className='bg-black mx-2 hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'
+    >
+      Chat
+    </div>
+  </div>
+)}
+
               </div>
             )}
           </div>
@@ -545,7 +579,7 @@ const MyProfile = () => {
         No Connection Requests
       </div>)}
       </div>
-      <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
+      <div className='bg-gray-900 p-4 w-fit mx-2 text-white rounded-md'>
       <h2 className='text-xl'>Connections</h2>
       {connectionNames.length > 0 ? (connectionNames?.map((user, index) => { 
                 
