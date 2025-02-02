@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { UserContext } from '../UserContext';
 import { sendMessage, listenForMessages } from '../frontend/firebase/firebase';
 
-const ChatBox = ({ receiver }) => {
+const ChatBox = ({ receiver, openChat }) => {
   const { user } = useContext(UserContext); // Get logged-in user
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
@@ -32,8 +32,9 @@ const ChatBox = ({ receiver }) => {
   };
 
   return (
-    <div className="border border-gray-300 rounded-lg p-4 w-full max-w-lg">
-      <div className="h-64 overflow-y-auto mb-4 p-2 border-b">
+    <div className="border relative border-gray-300 rounded-lg p-4 w-full max-w-lg">
+      <div onClick={()=>openChat(false)} className='absolute right-2 top-0 text-red scale-125 text-red-600 hover:cursor-pointer'>x</div>
+      <div className="h-64 overflow-y-auto mb-4 p-2 border-b mt-4">
         {messages.map((msg) => {
 
           console.log(msg?.sender + user?.uid)

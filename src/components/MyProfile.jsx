@@ -365,7 +365,7 @@ const MyProfile = () => {
             )}
           </div>
           <div className='items-center justify-center self-center'>
-          {!selfProfile && openChat && <ChatBox receiver={{ uid: id }}/> }
+          {!selfProfile && openChat && <ChatBox openChat={setOpenChat} receiver={{ uid: id }}/> }
           </div>
 
           <div className='flex overflow-hidden lg:flex-row flex-col p-10 items-center lg:mx-14 justify-between'>
