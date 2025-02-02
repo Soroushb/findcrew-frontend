@@ -17,6 +17,7 @@ const MyProfile = () => {
   const [skills, setSkills] = useState('');
   const [bio, setBio] = useState('');
   const [editBio, setEditBio] = useState(false)
+  const [openChat, setOpenChat] = useState(false);
   const [filter, setFilter] = useState("")
   const [picture, setPicture] = useState("")
   const [editName, setEditName] = useState(false)
@@ -315,13 +316,22 @@ const MyProfile = () => {
               </div>
             ) : (
               <div className='flex'>
-                {user && (<div onClick={handleConnect} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
+                {user && (
+                <div className='flex'>
+                <div onClick={handleConnect} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
                   Connect
+                </div>
+                <div onClick={() => {setOpenChat(!openChat)}} className='bg-black mx-2 hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
+                  Chat
+                </div>
                 </div>
                 )
                 }
               </div>
             )}
+          </div>
+          <div className='items-center justify-center self-center'>
+          {!selfProfile && openChat && <ChatBox receiver={{ uid: id }}/> }
           </div>
 
           <div className='flex overflow-hidden lg:flex-row flex-col p-10 items-center lg:mx-14 justify-between'>
@@ -341,8 +351,10 @@ const MyProfile = () => {
         
             }} 
               />
+              
               <MdModeEdit onClick={() => document.getElementById('fileInput').click()} className='absolute right-2 top-2 scale-150 text-2xl text-white bg-black p-2 rounded-full cursor-pointer'/>
               </>}
+              
             <img className='rounded-full object-cover w-full h-full' src={picture ? picture : images?.profile} width={300} height={300} alt="profile-pic" />
             </div>
             <div className='lg:w-2/3 lg:h-72 lg:mr-10 flex flex-col lg:items-start justify-center'>
@@ -392,6 +404,7 @@ const MyProfile = () => {
 </div>
           </div>
           </div>
+          
           <div className='grid lg:grid-cols-2 w-full'>
           <div className='flex flex-col justify-start items-start px-20 py-10'>
             <h2 className='bg-gray-300 w-full text-start p-3 rounded-lg m-2 flex'>
@@ -534,18 +547,20 @@ const MyProfile = () => {
       </div>
       <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
       <h2 className='text-xl'>Connections</h2>
-      {connectionNames.length > 0 ? (connectionNames?.map((user, index) => (
+      {connectionNames.length > 0 ? (connectionNames?.map((user, index) => { 
+                
+       return (
       <div className='flex justify-between'>
       <div
         key={index}
         className="hover:cursor-pointer hover:underline mt-2"
-        onClick={() => navigate(`/profile/${connectionRequests[index]?.senderUid}`)}
+        onClick={() => navigate(`/profile/${connections[index]?.uid}`)}
       >
       {user}
     </div>
         
     </div>
-    ))):(
+    )})):(
     <div className='text-sm'>
       No Connections
     </div>)}
@@ -556,7 +571,6 @@ const MyProfile = () => {
         </div>
         </div>
       )}
-      {!selfProfile && <ChatBox receiver={{ uid: id }} />}
       
       {editMode && (
   <div className="m-20 bg-gray-300 p-12 rounded-lg relative flex flex-col justify-start">
@@ -587,7 +601,8 @@ const MyProfile = () => {
                   {role}
                 </option>
               ))}
-            </select>
+      </select>
+
       <label className="pl-2">Location</label>
       <input 
         className="rounded-md p-2 m-2" 
@@ -596,6 +611,7 @@ const MyProfile = () => {
         value={location} 
         onChange={(e) => setLocation(e.target.value)} 
       />
+
       <label className="pl-2">Skills</label>
       <input 
         className="rounded-md p-2 m-2" 
@@ -604,9 +620,10 @@ const MyProfile = () => {
         value={skills} 
         onChange={(e) => setSkills(e.target.value)} 
       />
+
       <label className="pl-2">Bio</label>
       <textarea 
-        className="rounded-md p-2 m-2" 
+        className="rounded-md p-2 m-2"  
         placeholder="Write your bio" 
         value={bio} 
         onChange={(e) => setBio(e.target.value)} 
@@ -634,7 +651,6 @@ const MyProfile = () => {
   </div>
 )}
 
-      
     </div>
   );
 };

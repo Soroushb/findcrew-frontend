@@ -41,6 +41,7 @@ const Navbar = () => {
             </>
           ) : (
             <div className="flex items-center space-x-4">
+              <div className='bg-white p-2 rounded-md hover:cursor-pointer'>Chats</div>
               <LogoutButton />
               <div 
                 onClick={() => navigate(`profile/${user.uid}`)} 
