@@ -28,8 +28,12 @@ const MyProfile = () => {
   const [connectionRequests, setConnectionRequests] = useState([]); 
   const [connections, setConnections] = useState([])
   const [connectionNames, setConnectionNames] = useState([])
+  const [connectionPics, setConnectionPics] = useState([])
+  const [requestPics, setRequestPics] = useState([])
   const [isConnected, setIsConnected] = useState(false)
   const [name, setName] = useState('');
+  const [connectionRequestOpen, setConnectionRequestOpen] = useState(false)
+  const [connectionOpen, setConnectionOpen] = useState(false)
   const [editMode, setEditMode] = useState(false);
   const [selfProfile, setSelfProfile] = useState(false);
   const { id } = useParams();
@@ -169,6 +173,47 @@ const MyProfile = () => {
     fetchAllConnectionUsernames();
     console.log(connectionNames)
   }, [connections]);
+
+  useEffect(() => {
+    const fetchAllConnectionPictures = async () => {
+      try {
+          if (connections.length === 0) return;
+          
+          const users = await Promise.all(
+              connections.map((connection) => getUserInfo(connection.uid))
+          );
+  
+          console.log("Fetched user data:", users); // Check if displayName is available
+  
+          setConnectionPics(users.map((user) => user?.profilePicture || "Unknown"));
+          console.log(connectionPics)
+      } catch (err) {
+          console.error("Error fetching usernames:", err);
+      }
+  };
+  
+    fetchAllConnectionPictures();
+    console.log(connectionNames)
+  }, [connections]);
+
+
+  useEffect(() => {
+    const fetchAllRequestPictures = async () => {
+      try {
+          if (connectionRequests.length === 0) return;
+          
+          const users = await Promise.all(
+              connectionRequests.map((request) => getUserInfo(request.uid))
+          );
+  
+          setRequestPics(users.map((user) => user?.profilePicture || "Unknown"));
+      } catch (err) {
+          console.error("Error fetching usernames:", err);
+      }
+  };
+  
+    fetchAllRequestPictures();
+  }, [connectionRequests]);
 
   useEffect(() => {
     if (id && user?.uid) {
@@ -328,8 +373,22 @@ const MyProfile = () => {
           <div className='flex flex-col lg:flex-row w-screen items-center lg:px-20 lg:py-10 p-10 justify-between'>
             {selfProfile ? (<h1 className='text-4xl font-semibold my-2 px-14'>My Profile</h1>
             ) : (<h1 className='text-4xl font-semibold my-2 px-14'>{name?.toUpperCase()}</h1>)}
+            {selfProfile && (<div className='flex'>
+              <div onClick={() => {setConnectionRequestOpen(!connectionRequestOpen); setConnectionOpen(false)}} className='bg-black relative p-5 mx-1 hover:cursor-pointer rounded-lg text-white'>
+                Requests
+               {connectionRequests.length > 0 && ( <div className='absolute top-0 right-0 w-6 h-6  rounded-full bg-red-500'>
+                {connectionRequests.length}
+              </div> )}            
+              </div>
+              <div onClick={() => {setConnectionOpen(!connectionOpen); setConnectionRequestOpen(false)}} className='bg-white border relative p-5 mx-1 hover:cursor-pointer rounded-lg'>
+                Connections
+                {connectionNames.length > 0 && ( <div className='absolute top-0 right-0 w-6 h-6 rounded-full hover:scale-125 bg-blue-500 text-white'>
+                {connectionNames.length}
+              </div> )}  
+              </div>
+            </div>)}
             {selfProfile ? (
-              <div className='flex'>
+              <div className='flex justify-between'>
                 <div onClick={() => setEditMode(true)} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
                   Edit Profile
                 </div>
@@ -361,13 +420,51 @@ const MyProfile = () => {
   </div>
 )}
 
-              </div>
+            </div>
             )}
           </div>
           <div className='items-center justify-center self-center'>
-          {!selfProfile && openChat && <ChatBox openChat={setOpenChat} receiver={{ uid: id }}/> }
+          {!selfProfile && openChat && <ChatBox  openChat={setOpenChat} receiver={{ uid: id }}/> }
           </div>
-
+          
+          {selfProfile && connectionRequestOpen && !connectionOpen && (
+          <div className='flex items-center justify-center'>
+          <div className='flex flex-col w-1/3 bg-gray-900 rounded-lg p-6'>
+          {requestNames.map((request, index) => (
+            <div className='flex justify-between'>
+            <div className='flex w-full'>
+            <div onClick={() => navigate(`/profile/${connectionRequests[index]?.uid}`)} className='flex hover:cursor-pointer items-center'>
+            <img  src={requestPics[index] ? requestPics[index] : images?.profile} width={60} height={60} className='rounded-full hover:scale-110 object-cover'  alt='pic'/>
+            <div className='flex flex-col text-white hover:scale-110 text-lg p-4'>
+            {request}
+            </div>
+            </div>
+            </div>
+            <div className='flex m-2'>
+            <div onClick={() => acceptConnectionRequest(id , connectionRequests[index]?.senderUid )} className=' bg-black text-white rounded-md hover:cursor-pointer m-1 p-1'>Accept</div>
+            <div className=' bg-white text-black rounded-md  hover:cursor-pointer m-1 p-1'>Reject</div>
+            </div>
+            </div>
+          ))}
+          <div>
+          </div>
+          </div>
+          </div>)}
+          {selfProfile && connectionOpen && (
+          <div className='flex items-center justify-center'>
+          <div className='flex flex-col w-1/3 bg-gray-900 rounded-lg p-6'>
+          {connectionNames.map((connection, index) => (
+            <div onClick={() => navigate(`/profile/${connections[index]?.uid}`)} className='flex hover:cursor-pointer items-center'>
+            <img  src={connectionPics[index] ? connectionPics[index] : images?.profile} width={75} height={60} className='rounded-full hover:scale-110 object-cover'  alt='pic'/>
+            <div className='flex flex-col text-white hover:scale-110 text-lg p-4'>
+            {connection}
+            </div>
+            </div>
+          ))}
+          <div>
+          </div>
+          </div>
+          </div>)}
           <div className='flex overflow-hidden lg:flex-row flex-col p-10 items-center lg:mx-14 justify-between'>
             <div className='w-72 h-72 relative'>
             {selfProfile && <>
@@ -560,6 +657,7 @@ const MyProfile = () => {
           <div className='flex'>
         <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
         <h2 className='text-xl'>Connection Requests</h2>
+        
         {requestNames.length > 0 ? (requestNames?.map((user, index) => (
         <div className='flex justify-between'>
         <div

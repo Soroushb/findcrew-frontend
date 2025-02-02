@@ -4,6 +4,8 @@ import SignUp from './components/SignUp';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AboutUs from './components/AboutUs';
+import ChatBox from './components/ChatBox';
+import Chats from './components/Chats';
 import Search from './components/Search';
 import { UserContext } from './UserContext'; // Import the context
 import { UserProvider } from './UserContext'; 
@@ -28,6 +30,8 @@ function App() {
                       <Route exact path="/signin" element={<SignIn />} />
                       <Route exact path="/search" element={<Search />} />
                       <Route exact path="/about-us" element={<AboutUs />} />
+                      <Route path="/chats" element={<Chats />} />
+                      <Route path="/chat/:id" element={<ChatBox />} />
                       <Route exact path="/profile/:id" element={<MyProfile />} />
                     </Routes>
                   </div>
