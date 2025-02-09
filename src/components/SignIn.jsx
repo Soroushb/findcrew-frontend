@@ -3,6 +3,7 @@ import { auth } from "../frontend/firebase/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link } from 'react-router-dom';
 import { UserContext } from '../UserContext';
+import { FaLock } from "react-icons/fa";
 import { updateDisplayName } from '../frontend/firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import {motion} from 'framer-motion'
@@ -44,12 +45,13 @@ function SignIn() {
         initial={{opacity: 0, y: -50}}
         animate={{opacity: 1, y: 0}}
         transition={{ duration: 1}}>
-      <div className='m-20 bg-gray-300 p-12 rounded-lg flex flex-col justify-start'>
+      <div className='m-20 border-gray-300 border-2 p-12 rounded-lg flex flex-col justify-start'>
+      <FaLock className='self-center scale-110'/>
       <h2 className='text-2xl m-2 font-semibold mb-10'>Sign In</h2>
       <form className='flex flex-col items-start' onSubmit={handleLogin}>
         <label className='pl-2'>Email</label>
         <input
-          className='rounded-md p-2 m-2'
+          className='rounded-md p-2 m-2 border-gray-300 border-2'
           type="email"
           placeholder="Email"
           value={email}
@@ -57,13 +59,12 @@ function SignIn() {
         />
         <label className='pl-2'>Password</label>
         <input
-         className='rounded-md p-2 m-2'
+         className='rounded-md p-2 m-2 border-gray-300 border-2'
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <div></div>
         <div className='flex self-center mt-4'>
         <button className='text-white bg-black p-2  hover:scale-110 rounded-lg' type="submit">Sign In</button>
         </div>

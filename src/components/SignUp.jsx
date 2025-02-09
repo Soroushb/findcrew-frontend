@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { auth } from "../frontend/firebase/firebase";   
 import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from "firebase/auth";
-import { updateUserInfo, getUserInfo, updateUserField } from '../frontend/firebase/firebase';
+import { updateUserField } from '../frontend/firebase/firebase';
 import { Link } from 'react-router-dom';
+import { FaLock } from "react-icons/fa";
 import { UserContext } from '../UserContext'; 
 import {motion} from 'framer-motion'
 import { useNavigate } from 'react-router-dom';
@@ -174,6 +175,7 @@ function SignUp() {
         animate={{opacity: 1, y: 0}}
         transition={{ duration: 1}}>
         <div className='m-20 border-gray-300 border-2 p-12 rounded-lg flex flex-col justify-start'>
+        <FaLock className='self-center scale-110'/>
         <div className='text-6xl bottom-0'>
           <span className={`hover:cursor-pointer ${step === 1 || step === 2 || step === 3 ? 'text-yellow-600' : ''}`}>.</span>
           <span className={`${step === 2 || step === 3 ? 'text-yellow-600' : ''}`}>.</span>
@@ -185,7 +187,7 @@ function SignUp() {
             <form className='flex flex-col items-start' onSubmit={handleSignUp}>
             <label className='pl-2'>Display Name</label>
             <input
-              className='rounded-md p-2 m-2'
+              className='rounded-md p-2 m-2 border-gray-300 border-2'
               type="text"
               placeholder="Display Name"
               value={displayName}
@@ -194,7 +196,7 @@ function SignUp() {
             />
             <label className='pl-2'>Email</label>
             <input
-              className='rounded-md p-2 m-2'
+              className='rounded-md p-2 m-2 border-gray-300 border-2'
               type="email"
               placeholder="Email"
               value={email}
@@ -203,7 +205,7 @@ function SignUp() {
             />
             <label className='pl-2'>Password</label>
             <input
-              className='rounded-md p-2 m-2'
+              className='rounded-md p-2 m-2 border-gray-300 border-2'
               type="password"
               placeholder="Password"
               value={password}
@@ -212,7 +214,7 @@ function SignUp() {
             />
             <label className='pl-2'>Repeat Password</label>
             <input
-              className='rounded-md p-2 m-2'
+              className='rounded-md p-2 m-2 border-gray-300 border-2'
               type="password"
               placeholder="Repeat Password"
               value={passwordRepeat}
@@ -230,7 +232,7 @@ function SignUp() {
             <form className='flex flex-col items-center' onSubmit={handleStepTwo}>
             <label className='pl-2'>What is Your Role:</label>
             <select
-              className="rounded-xl bg-gray-200 p-2 m-4 lg:w-1/2"
+              className="rounded-xl bg-gray-200 p-2 m-4 lg:w-3/4"
               value={role}
               onChange={(e) => setRole(e.target.value)}
             >

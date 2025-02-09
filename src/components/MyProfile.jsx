@@ -31,6 +31,7 @@ const MyProfile = () => {
   const [connectionPics, setConnectionPics] = useState([])
   const [requestPics, setRequestPics] = useState([])
   const [isConnected, setIsConnected] = useState(false)
+  const [isRequestSend, setIsRequestSent] = useState(false)
   const [name, setName] = useState('');
   const [connectionRequestOpen, setConnectionRequestOpen] = useState(false)
   const [connectionOpen, setConnectionOpen] = useState(false)
@@ -283,6 +284,7 @@ const MyProfile = () => {
     try {
       if (user?.uid && id) {
         await sendConnectionRequest(user?.uid, id);
+        setIsRequestSent(true)
         alert("Connection request sent!");
       } else {
         alert("Unable to send connection request. Please try again.");
@@ -403,10 +405,10 @@ const MyProfile = () => {
       </div>
     ) : (
       <div
-        onClick={handleConnect}
+        onClick={!isRequestSend ? handleConnect : null}
         className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'
       >
-        Connect
+        {!isRequestSend ? <>Connect</> : <>Connection Request Sent</>}
       </div>
     )}
     <div
@@ -427,14 +429,14 @@ const MyProfile = () => {
           {!selfProfile && openChat && <ChatBox  openChat={setOpenChat} receiver={{ uid: id }}/> }
           </div>
           
-          {selfProfile && connectionRequestOpen && !connectionOpen && (
+          {selfProfile && connectionRequestOpen && !connectionOpen && requestNames.length > 0 && (
           <div className='flex items-center justify-center'>
           <div className='flex flex-col w-1/3 bg-gray-900 rounded-lg p-6'>
           {requestNames.map((request, index) => (
             <div className='flex justify-between'>
             <div className='flex w-full'>
             <div onClick={() => navigate(`/profile/${connectionRequests[index]?.uid}`)} className='flex hover:cursor-pointer items-center'>
-            <img  src={requestPics[index] ? requestPics[index] : images?.profile} width={60} height={60} className='rounded-full hover:scale-110 object-cover'  alt='pic'/>
+            <img  src={requestPics[index] ? requestPics[index] : images?.pic} width={60} height={60} className='rounded-full hover:scale-110 object-cover'  alt='pic'/>
             <div className='flex flex-col text-white hover:scale-110 text-lg p-4'>
             {request}
             </div>
@@ -450,12 +452,12 @@ const MyProfile = () => {
           </div>
           </div>
           </div>)}
-          {selfProfile && connectionOpen && (
+          {selfProfile && connectionOpen && connectionNames.length > 0 && (
           <div className='flex items-center justify-center'>
           <div className='flex flex-col w-1/3 bg-gray-900 rounded-lg p-6'>
           {connectionNames.map((connection, index) => (
             <div onClick={() => navigate(`/profile/${connections[index]?.uid}`)} className='flex hover:cursor-pointer items-center'>
-            <img  src={connectionPics[index] ? connectionPics[index] : images?.profile} width={75} height={60} className='rounded-full hover:scale-110 object-cover'  alt='pic'/>
+            <img  src={connectionPics[index] ? connectionPics[index] : images?.profile} width={40} height={40} className='rounded-full h-14 w-14 hover:scale-110 object-cover'  alt='pic'/>
             <div className='flex flex-col text-white hover:scale-110 text-lg p-4'>
             {connection}
             </div>
@@ -486,7 +488,7 @@ const MyProfile = () => {
               <MdModeEdit onClick={() => document.getElementById('fileInput').click()} className='absolute right-2 top-2 scale-150 text-2xl text-white bg-black p-2 rounded-full cursor-pointer'/>
               </>}
               
-            <img className='rounded-full object-cover w-full h-full' src={picture ? picture : images?.profile} width={300} height={300} alt="profile-pic" />
+            <img className='rounded-full object-cover w-full h-full' src={picture ? picture : images?.pic} width={300} height={300} alt="profile-pic" />
             </div>
             <div className='lg:w-2/3 lg:h-72 lg:mr-10 flex flex-col lg:items-start justify-center'>
               <h1 className='lg:text-2xl text-lg font-semibold my-2  p-2 lg:px-4 rounded-lg'>Bio:</h1>
@@ -652,11 +654,13 @@ const MyProfile = () => {
 
             </h2>
           </div>
-        <div className='p-10'>
+
+        {/* <div className='p-10'>
         {selfProfile && (
           <div className='flex'>
         <div className='bg-gray-900 p-4 w-fit text-white rounded-md'>
         <h2 className='text-xl'>Connection Requests</h2>
+        
         
         {requestNames.length > 0 ? (requestNames?.map((user, index) => (
         <div className='flex justify-between'>
@@ -699,7 +703,9 @@ const MyProfile = () => {
     </div>
     </div>
       )}
-          </div>
+          </div> */}
+
+
         </div>
         </div>
       )}

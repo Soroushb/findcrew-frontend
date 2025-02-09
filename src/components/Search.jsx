@@ -119,7 +119,7 @@ const Search = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1 }}
                     key={index}
-                    className="m-2 hover:bg-yellow-400 p-4 h-full flex flex-col bg-yellow-300 rounded-lg text-gray-800 cursor-pointer"
+                    className="m-2 hover:bg-yellow-400 p-4 h-full flex flex-col bg-yellow-300 rounded-lg text-black cursor-pointer"
                     onClick={() => navigate(`/profile/${user?.uid}`)}
                   >
                     <div className="flex justify-center w-48 h-48 mb-4 overflow-hidden">
@@ -128,17 +128,17 @@ const Search = () => {
                         src={
                           user?.profilePicture
                             ? user?.profilePicture
-                            : images?.profile
+                            : images?.pic
                         }
                         alt="profile-pic"
                       />
                     </div>
                     <div className="flex items-center flex-col">
                       <p className="font-semibold text-lg">{user.displayName}</p>
-                      <p className="text-sm text-gray-700">
+                      <p className="text-sm text-black">
                         {user?.updatedData?.location}
                       </p>
-                      <p className="text-sm text-gray-700">
+                      <p className="text-sm text-black">
                         {user?.updatedData?.skills}
                       </p>
                     </div>
