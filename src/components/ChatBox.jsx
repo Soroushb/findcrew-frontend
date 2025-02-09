@@ -20,6 +20,7 @@ const ChatBox = ({ receiver, openChat }) => {
     if (!user || !receiver) return;
 
     const unsubscribe = listenForMessages(chatId, handleNewMessages);
+    
 
     return () => unsubscribe(); // Cleanup listener
   }, [user, receiver, chatId, handleNewMessages]);
@@ -37,11 +38,11 @@ const ChatBox = ({ receiver, openChat }) => {
       <div className="h-64 overflow-y-auto mb-4 p-2 border-b mt-4">
         {messages.map((msg) => {
 
-          console.log(msg?.sender + user?.uid)
+          console.log(msg)
           
 
           return (
-          <div key={msg.id} className={`p-2 my-1 rounded ${msg.sender === user.uid ? 'bg-blue-200 text-right' : 'bg-gray-200'}`}>
+          <div key={msg.id} className={`p-2 my-1 rounded ${msg?.senderUid === user?.uid ? 'bg-blue-200 text-right' : 'bg-gray-200 text-left'}`}>
             {msg.messageText}
           </div>
         )})}
