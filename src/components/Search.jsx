@@ -115,15 +115,15 @@ const Search = () => {
         <div className='flex flex-col'>
           <div className='flex self-center'>
             <div onClick={() => setCategory("role")} className='flex flex-col items-center justify-center cursor-pointer'> 
-            <p className={`${category === "role" ? "" : "invisible"} scale-50`}><FaCircle/></p>
+            <p className={`${category === "role" ? "" : "invisible"} scale-50 text-yellow-500`}><FaCircle/></p>
             <p className='mx-4'>Role</p>
             </div>
             <div onClick={() => setCategory("name")} className='flex flex-col items-center justify-center cursor-pointer'> 
-            <p className={`${category === "name" ? "" : "invisible"} scale-50`}><FaCircle/></p>
+            <p className={`${category === "name" ? "" : "invisible"} scale-50 text-yellow-500`}><FaCircle/></p>
             <p className='mx-4'>Name</p>
             </div>
             <div onClick={() => setCategory("location")} className='flex flex-col items-center justify-center cursor-pointer'> 
-            <p className={`${category === "location" ? "" : "invisible"} scale-50`}><FaCircle/></p>
+            <p className={`${category === "location" ? "" : "invisible"} scale-50 text-yellow-500`}><FaCircle/></p>
             <p className='mx-4'>Location</p>
             </div>
           </div>

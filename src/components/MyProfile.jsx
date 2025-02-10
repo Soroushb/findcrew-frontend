@@ -457,7 +457,7 @@ const MyProfile = () => {
           <div className='flex flex-col w-1/3 bg-gray-900 rounded-lg p-6'>
           {connectionNames.map((connection, index) => (
             <div onClick={() => navigate(`/profile/${connections[index]?.uid}`)} className='flex hover:cursor-pointer items-center'>
-            <img  src={connectionPics[index] ? connectionPics[index] : images?.profile} width={40} height={40} className='rounded-full h-14 w-14 hover:scale-110 object-cover'  alt=''/>
+            <img  src={connectionPics[index] ? connectionPics[index] : images?.profile} width={40} height={40} className={`${!connectionPics[index] ? 'invisible' : ''} rounded-full h-14 w-14 hover:scale-110 object-cover`}  alt=''/>
             <div className='flex flex-col text-white hover:scale-110 text-lg p-4'>
             {connection}
             </div>
