@@ -3,12 +3,16 @@ import { UserContext } from '../UserContext';
 import { getUsers } from '../frontend/firebase/firebase';
 import images from '../constants/images';
 import { useNavigate } from 'react-router-dom';
+import { FaCircle } from "react-icons/fa";
 import { motion } from 'framer-motion';
 
 const Search = () => {
   const { user, setUser } = useContext(UserContext);
   const [filter, setFilter] = useState("");
   const [results, setResults] = useState([]);
+  const [category, setCategory] = useState("role");
+  const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
 
   const filmIndustryRoles = [
     "Director",
@@ -65,11 +69,33 @@ const Search = () => {
 
   const navigate = useNavigate();
 
-  const handleFilter = async (e) => {
+  const handleFilterRole = async (e) => {
     e.preventDefault();
 
     try {
-      const users = await getUsers(filter);
+      const users = await getUsers(filter, "role");
+      setResults(users);
+    } catch (err) {
+      console.error("Error getting users:", err.message);
+    }
+  };
+
+  const handleFilterName = async (e) => {
+    e.preventDefault();
+
+    try {
+      const users = await getUsers(name, "displayName");
+      setResults(users);
+    } catch (err) {
+      console.error("Error getting users:", err.message);
+    }
+  };
+
+  const handleFilterLocation = async (e) => {
+    e.preventDefault();
+
+    try {
+      const users = await getUsers(location, "location");
       setResults(users);
     } catch (err) {
       console.error("Error getting users:", err.message);
@@ -86,15 +112,29 @@ const Search = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <div>
-          <form onSubmit={handleFilter}>
+        <div className='flex flex-col'>
+          <div className='flex self-center'>
+            <div onClick={() => setCategory("role")} className='flex flex-col items-center justify-center cursor-pointer'> 
+            <p className={`${category === "role" ? "" : "invisible"} scale-50`}><FaCircle/></p>
+            <p className='mx-4'>Role</p>
+            </div>
+            <div onClick={() => setCategory("name")} className='flex flex-col items-center justify-center cursor-pointer'> 
+            <p className={`${category === "name" ? "" : "invisible"} scale-50`}><FaCircle/></p>
+            <p className='mx-4'>Name</p>
+            </div>
+            <div onClick={() => setCategory("location")} className='flex flex-col items-center justify-center cursor-pointer'> 
+            <p className={`${category === "location" ? "" : "invisible"} scale-50`}><FaCircle/></p>
+            <p className='mx-4'>Location</p>
+            </div>
+          </div>
+          {category === "role" && (<form onSubmit={handleFilterRole}>
             <select
-              className="rounded-xl bg-gray-200 p-2 m-4 lg:w-1/6"
+              className="rounded-xl border border-gray-200 p-2 m-4 lg:w-1/6"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             >
               <option value="" disabled>
-                Select a role...
+                Select a Role...
               </option>
               {filmIndustryRoles.map((role, index) => (
                 <option key={index} value={role}>
@@ -105,10 +145,43 @@ const Search = () => {
             <button
               className="bg-black text-white p-2 rounded-lg mx-2"
               type="submit"
+        
             >
               Search
             </button>
-          </form>
+          </form>)}
+
+          {category === "name" && (<form onSubmit={handleFilterName}>
+            
+            <input 
+            placeholder='Search by Name...'
+            className='m-4 p-2 lg:w-1/6 rounded-xl border-2 border-gray-300'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            />
+            <button
+              className="bg-black text-white p-2 rounded-lg mx-2"
+              type="submit"
+            >
+              Search
+            </button>
+          </form>)}
+
+          {category === "location" && (<form onSubmit={handleFilterLocation}>
+
+            <input 
+            placeholder='Search by Location...'
+            className='m-4 p-2 lg:w-1/6 rounded-xl border-2 border-gray-300'
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            />
+            <button
+              className="bg-black text-white p-2 rounded-lg mx-2"
+              type="submit"
+            >
+              Search
+            </button>
+          </form>)}
           
           <div className="flex items-center justify-center">
             {results.length > 0 ? (

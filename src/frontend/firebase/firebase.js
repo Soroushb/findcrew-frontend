@@ -109,13 +109,13 @@ const getUserInfo = async (uid) => {
   }
 };
 
-const getUsers = async (role) => {
+const getUsers = async (role, cat) => {
   try {
     const usersRef = collection(db, "users");
 
     const lowercasedRole = role.toLowerCase();
-
-    const q = query(usersRef, where("role", "==", role));
+    console.log(role , cat)
+    const q = query(usersRef, where(cat, "==", role));
 
     const querySnapshot = await getDocs(q);
 
