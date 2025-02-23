@@ -373,18 +373,19 @@ const MyProfile = () => {
       {!editMode && (
         <div className='flex flex-col'>
           <div className='flex flex-col lg:flex-row w-screen items-center lg:px-20 lg:py-10 p-10 justify-between'>
-            {selfProfile ? (<h1 className='text-4xl font-semibold my-2 px-14'>My Profile</h1>
+            {selfProfile ? (<h1 className='text-4xl font-semibold lg:my-2 my-5 px-14'>My Profile</h1>
             ) : (<h1 className='text-4xl font-semibold my-2 px-14'>{name?.toUpperCase()}</h1>)}
-            {selfProfile && (<div className='flex'>
+            {selfProfile && (
+              <div className='flex mb-4 lg:mb-0'>
               <div onClick={() => {setConnectionRequestOpen(!connectionRequestOpen); setConnectionOpen(false)}} className='bg-black relative p-5 mx-1 hover:cursor-pointer rounded-lg text-white'>
                 Requests
-               {connectionRequests.length > 0 && ( <div className='absolute top-0 right-0 w-6 h-6  rounded-full bg-red-500'>
+               {connectionRequests.length >= 0 && ( <div className='absolute top-0 right-0 w-6 h-6  rounded-full bg-red-500'>
                 {connectionRequests.length}
               </div> )}            
               </div>
               <div onClick={() => {setConnectionOpen(!connectionOpen); setConnectionRequestOpen(false)}} className='bg-white border relative p-5 mx-1 hover:cursor-pointer rounded-lg'>
                 Connections
-                {connectionNames.length > 0 && ( <div className='absolute top-0 right-0 w-6 h-6 rounded-full hover:scale-125 bg-blue-500 text-white'>
+                {connectionNames.length >= 0 && ( <div className='absolute top-0 right-0 w-6 h-6 rounded-full hover:scale-125 bg-blue-500 text-white'>
                 {connectionNames.length}
               </div> )}  
               </div>
@@ -498,7 +499,7 @@ const MyProfile = () => {
     <div className="w-full">
       <textarea
         className="w-full border p-2 rounded-md"
-        value={bio}
+        value={bio ? bio : ""}
         maxLength={800}
         rows={5}
         placeholder="Write your bio here..."
@@ -506,7 +507,7 @@ const MyProfile = () => {
         required
       />
       <div className="text-right text-sm text-gray-500 mt-1">
-        {bio.length}/800 characters
+        {bio?.length}/800 characters
       </div>
       <div className="flex justify-end mt-2">
         <button

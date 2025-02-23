@@ -67,7 +67,7 @@ const Navbar = () => {
               onClick={() => setMenuOpen(!menuOpen)} 
             />
             <motion.div
-              className="absolute right-0 mt-2 bg-black text-white p-4 rounded-lg shadow-lg space-y-4"
+              className="absolute z-50 right-0 mt-2 bg-black text-white p-4 rounded-lg shadow-lg space-y-4"
               initial="closed"
               animate={menuOpen ? "open" : "closed"}
               variants={menuVariants}

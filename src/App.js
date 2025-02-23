@@ -21,7 +21,7 @@ function App() {
           <UserContext.Consumer>
             {({ user }) => (
               <>
-                <Navbar />
+                <Navbar/>
                 <div className="main">
                   <div className="routes">
                     <Routes>

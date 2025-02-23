@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, setPersistence, browserLocalPersistence  } from "firebase/auth";
 import { getFirestore, doc, orderBy, onSnapshot, addDoc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore"; 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -20,6 +20,14 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
+
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Auth persistence set to local storage.");
+  })
+  .catch((error) => {
+    console.error("Error setting auth persistence:", error);
+  });
 
 // Function to upload profile picture and store its URL in Firestore
 const uploadProfilePicture = async (uid, file) => {
