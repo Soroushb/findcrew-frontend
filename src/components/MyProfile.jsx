@@ -245,6 +245,7 @@ const MyProfile = () => {
 
   useEffect(() => {
     
+    
     const getConnections = async () => {
       if (user?.uid) {
         try {
@@ -392,9 +393,9 @@ const MyProfile = () => {
             </div>)}
             {selfProfile ? (
               <div className='flex justify-between'>
-                <div onClick={() => setEditMode(true)} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
+                {/* <div onClick={() => setEditMode(true)} className='bg-black hover:scale-110 hover:cursor-pointer text-white p-2 h-full rounded-lg'>
                   Edit Profile
-                </div>
+                </div> */}
               </div>
             ) : (
               <div className='flex'>
@@ -437,7 +438,7 @@ const MyProfile = () => {
             <div className='flex justify-between'>
             <div className='flex w-full'>
             <div onClick={() => navigate(`/profile/${connectionRequests[index]?.uid}`)} className='flex hover:cursor-pointer items-center'>
-            <img  src={requestPics[index] ? requestPics[index] : images?.profile} width={60} height={60} className='rounded-full hover:scale-110 object-cover'  alt=''/>
+            <img  src={requestPics[index] ? requestPics[index] : images?.set} width={60} height={60} alt="pic" className='rounded-full hover:scale-110 object-cover'  alt=''/>
             <div className='flex flex-col text-white hover:scale-110 text-lg p-4'>
             {request}
             </div>
@@ -786,7 +787,7 @@ const MyProfile = () => {
       </div>
     </form>
     {error && <p className="bg-red-500 p-2 rounded-lg">{error}</p>}
-    {success && <p className="bg-green-500 p-2 rounded-lg">Profile Updated!</p>}
+    {success && <p className="bg-green-500 p-2 rounded-lg">Profile Updated!</p> && setEditMode(false)}
   </div>
 )}
 
