@@ -438,7 +438,7 @@ const MyProfile = () => {
             <div className='flex justify-between'>
             <div className='flex w-full'>
             <div onClick={() => navigate(`/profile/${connectionRequests[index]?.uid}`)} className='flex hover:cursor-pointer items-center'>
-            <img  src={requestPics[index] ? requestPics[index] : images?.set} width={60} height={60} alt="pic" className='rounded-full hover:scale-110 object-cover'  alt=''/>
+            <img  src={requestPics[index] ? requestPics[index] : images?.set} width={60} height={60} alt="pic" className='rounded-full hover:scale-110 object-cover'/>
             <div className='flex flex-col text-white hover:scale-110 text-lg p-4'>
             {request}
             </div>

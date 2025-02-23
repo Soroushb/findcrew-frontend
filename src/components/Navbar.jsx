@@ -32,12 +32,12 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           {!user ? (
             <>
-              <Link to="/signup" className="bg-black text-white py-2 px-4 rounded-md hover:scale-110 transition-colors">
+              <div onClick={() => navigate("/signup")} className="bg-black hover:cursor-pointer text-white py-2 px-4 rounded-md hover:scale-110 transition-colors">
                 Register
-              </Link>
-              <Link to="/signin" className="bg-white text-black py-2 px-4 rounded-md hover:scale-110 transition-colors">
+              </div>
+              <div onClick={() => navigate("/signin")} className="bg-white hover:cursor-pointer text-black py-2 px-4 rounded-md hover:scale-110 transition-colors">
                 Login
-              </Link>
+              </div>
             </>
           ) : (
             <div className="flex items-center space-x-4">
@@ -58,9 +58,9 @@ const Navbar = () => {
       {/* Mobile Navbar */}
       <div className="lg:hidden bg-yellow-400">
         <div className="flex justify-between items-center p-5">
-          <Link to="/" onClick={() => menuOpen(false)} className="font-semibold text-2xl text-gray-800 hover:text-gray-600">
+          <div onClick={() => {setMenuOpen(false); navigate("/")}} className="font-semibold text-2xl text-gray-800 hover:text-gray-600">
             CrewFind
-          </Link>
+          </div>
           <div className="relative">
             <IoIosMenu 
               className="text-3xl text-black hover:text-white cursor-pointer"
@@ -72,15 +72,15 @@ const Navbar = () => {
               animate={menuOpen ? "open" : "closed"}
               variants={menuVariants}
             >
-              <Link to="/" onClick={() => menuOpen(false)} className="block text-lg hover:text-yellow-400 transition-colors">Home</Link>
-              <Link to="/search" onClick={() => menuOpen(false)} className="block text-lg hover:text-yellow-400 transition-colors">Search</Link>
+              <div  onClick={() => {setMenuOpen(false); navigate("/")}}  className="block text-lg hover:text-yellow-400 transition-colors">Home</div>
+              <div onClick={() => {setMenuOpen(false); navigate("/search")}} className="block text-lg hover:text-yellow-400 transition-colors">Search</div>
               {!user ? (
                 <>
-                  <Link to="/signin" onClick={() => menuOpen(false)} className="block text-lg hover:text-yellow-400 transition-colors">Login</Link>
-                  <Link to="/signup" onClick={() => menuOpen(false)} className="block text-lg hover:text-yellow-400 transition-colors">Create Account</Link>
+                  <div onClick={() => {setMenuOpen(false); navigate("/signin")}}  className="block text-lg hover:text-yellow-400 transition-colors">Login</div>
+                  <div onClick={() => {setMenuOpen(false); navigate("/signup")}}  className="block text-lg hover:text-yellow-400 transition-colors">Create Account</div>
                 </>
               ) : (
-                <Link to={`profile/${user.uid}`} onClick={() => menuOpen(false)} className="block text-lg hover:text-yellow-400 transition-colors">Profile</Link>
+                <div onClick={() => {setMenuOpen(false); navigate(`profile/${user.uid}`)}} className="block text-lg hover:text-yellow-400 transition-colors">Profile</div>
               )}
               <LogoutButton />
             </motion.div>
