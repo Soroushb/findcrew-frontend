@@ -4,6 +4,7 @@ import { UserContext } from '../UserContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Search from "../components/Search";
+import Dashboard from './Dashboard';
 
 const Home = () => {
   const { user } = useContext(UserContext);
@@ -13,6 +14,8 @@ const Home = () => {
   const homeRef = useRef(null);
   const homeRefMobile = useRef(null);
   const searchRef = useRef(null);
+  const dashboardRef = useRef(null);
+
 
   // State to track the active section
   const [activeSection, setActiveSection] = useState('home');
@@ -59,7 +62,7 @@ const Home = () => {
   return (
     <div className="relative">
       {/* Floating Dots Navigation */}
-      <div className="fixed top-1/2 right-9 transform -translate-y-1/2 flex flex-col gap-2 z-50">
+      <div className="fixed top-1/2 right-4 transform -translate-y-1/2 flex flex-col gap-2 z-50">
         <button
           onClick={() => scrollToSection(homeRef)}
           className={`w-3 h-3 rounded-full transition-all ${
@@ -158,10 +161,14 @@ const Home = () => {
 
       </motion.div>
 
-      {/* Search Section */}
-      <div ref={searchRef} id="search">
-        <Search />
+      <div ref={searchRef} id="dashboard">
+        <Dashboard/>
       </div>
+
+      {/* Search Section */}
+      {/* <div ref={searchRef} id="search">
+        <Search />
+      </div> */}
     </div>
   );
 };
