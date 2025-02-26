@@ -1,12 +1,16 @@
 import React from 'react'
 import images from '../constants/images'
+import { useNavigate } from 'react-router-dom'
 
 const AboutUs = () => {
+
+  const navigate = useNavigate();
   return (
-    <div className='flex flex-1  p-8 flex-row'>
-        <div className='flex w-1/2 flex-col'>
-        <h1 className='text-2xl'>About Us</h1>
-        <div className='p-10'>
+    <div className='flex flex-1 justify-center items-center  p-20 flex-col'>
+              <h1 className='text-2xl font-semibold mb-10'>About Us</h1>
+         <div className='flex items-center h-full'><img className='rounded-xl' src={images.set} width={700} alt="image"/></div>
+
+        <div className='flex w-full flex-col'>        <div className='p-10'>
         At CrewFind, we are passionate about creating a platform that connects talented individuals with exciting opportunities, bridging the gap between creatives, professionals, and organizations. Born out of the realization that collaboration is key to achieving great things, CrewFind aims to revolutionize the way people network, find collaborators, and assemble teams for projects across a wide range of industries.
 Our Mission
 
@@ -21,10 +25,9 @@ At CrewFind, we understand that finding the right people for a project can be ch
     Diverse Categories: Whether you're working in tech, art, media, education, or any other field, CrewFind caters to a wide array of industries and skills.
     User-Friendly Interface: Designed with simplicity and functionality in mind, our platform ensures a smooth experience for everyone.
 
-
         </div>
+        <div onClick={() => navigate("/signup")} className='bg-black w-fit rounded-md self-center hover:scale-110 hover:cursor-pointer p-2 text-white'>Create Account</div>
         </div>
-        <div className='flex h-full w-1/2'><img className='rounded-xl' src={images.set} width={700} alt="image"/></div>
     </div>
   )
 }

@@ -70,8 +70,10 @@ const Search = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getUsers(filter, "role")
-  }, [filter])
+    if (filter) {
+      getUsers(filter, "role").then(setResults).catch(err => console.error("Error getting users:", err.message));
+    }
+  }, [filter]);
 
   const handleFilterRole = async (e) => {
     e.preventDefault();
@@ -211,8 +213,9 @@ const Search = () => {
                       />
                     </div>
                     <div className="flex items-center flex-col">
-                      <p className="font-semibold text-lg">{user.displayName}</p>
-                      
+                      <p className="font-semibold text-lg">{user?.displayName}</p>
+                    <p className="text-gray-400 text-sm">{user?.role}</p>
+
                     </div>
                   </motion.div>
                 ))}

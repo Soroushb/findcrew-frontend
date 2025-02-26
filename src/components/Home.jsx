@@ -161,7 +161,7 @@ const Home = () => {
 
       </motion.div>
 
-      <div ref={searchRef} id="dashboard">
+      <div ref={searchRef} id="search">
         <Dashboard/>
       </div>
 
