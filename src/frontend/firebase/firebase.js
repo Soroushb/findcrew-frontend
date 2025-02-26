@@ -65,16 +65,13 @@ const acceptConnectionRequest = async (receiverUid, senderUid) => {
       throw new Error("Both sender and receiver UIDs are required.");
     }
 
-    const recipientRef = doc(db, "users", receiverUid);
-    const senderRef = doc(db, "users", senderUid);
-
     // Add sender to receiver's connections
-    await setDoc(doc(recipientRef, "connections", senderUid), { uid: senderUid });
+    await setDoc(doc(db, "users", receiverUid, "connections", senderUid), { uid: senderUid });
 
     // Add receiver to sender's connections
-    await setDoc(doc(senderRef, "connections", receiverUid), { uid: receiverUid });
+    await setDoc(doc(db, "users", senderUid, "connections", receiverUid), { uid: receiverUid });
 
-    // Remove the request from connectionRequests
+    // Remove request after acceptance
     await deleteDoc(doc(db, "users", receiverUid, "connectionRequests", senderUid));
 
     console.log("Connection request accepted.");
@@ -89,9 +86,15 @@ const rejectConnectionRequest = async (receiverUid, senderUid) => {
       throw new Error("Both sender and receiver UIDs are required.");
     }
 
-    await deleteDoc(doc(db, "users", receiverUid, "connectionRequests", senderUid));
+    const requestRef = doc(db, "users", receiverUid, "connectionRequests", senderUid);
+    const requestSnapshot = await getDoc(requestRef);
 
-    console.log("Connection request rejected.");
+    if (requestSnapshot.exists()) {
+      await deleteDoc(requestRef);
+      console.log("Connection request rejected.");
+    } else {
+      console.log("No connection request found.");
+    }
   } catch (error) {
     console.error("Error rejecting connection request:", error);
   }

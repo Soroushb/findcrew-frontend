@@ -141,6 +141,7 @@ const MyProfile = () => {
           connectionRequests.map((request) => getUserInfo(request?.senderUid))
         );
         setRequestNames(names.map((user) => user?.displayName));
+        console.log(requestNames)
       } catch (err) {
         console.error("Error fetching usernames:", err);
       }
