@@ -4,6 +4,7 @@ import { UserContext } from '../UserContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Search from "../components/Search";
+import AboutUs from "../components/AboutUs"
 import Dashboard from './Dashboard';
 
 const Home = () => {
@@ -14,6 +15,7 @@ const Home = () => {
   const homeRef = useRef(null);
   const homeRefMobile = useRef(null);
   const searchRef = useRef(null);
+  const aboutRef = useRef(null);
   const dashboardRef = useRef(null);
 
 
@@ -26,6 +28,7 @@ const Home = () => {
       { id: 'home', ref: homeRef },
       { id: 'homeMobile', ref: homeRefMobile },
       { id: 'search', ref: searchRef },
+      { id: 'aboutUs', ref: aboutRef}
     ];
 
     const observer = new IntersectionObserver(
@@ -75,6 +78,12 @@ const Home = () => {
             activeSection === 'search' ? 'bg-yellow-400' : 'bg-gray-400'
           } hover:bg-gray-800`}
         />
+        <button
+          onClick={() => scrollToSection(aboutRef)}
+          className={`w-3 h-3 rounded-full transition-all ${
+            activeSection === 'aboutUs' ? 'bg-yellow-400' : 'bg-gray-400'
+          } hover:bg-gray-800`}
+        />
       </div>
 
       {/* Desktop Home Section */}
@@ -96,7 +105,7 @@ const Home = () => {
             transition={{ duration: 1 }}
           >
             <img
-              className="rounded-lg"
+              className="rounded-lg hover:scale-105"
               height={350}
               src={images.filmset}
               alt="Film Set"
@@ -111,9 +120,9 @@ const Home = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <h1 className="text-4xl font-semibold text-gray-900 mb-4">Find Your Dream Crew</h1>
-            <p className="text-lg p-4 my-4 bg-white border-2 border-gray-300 rounded-xl text-gray-700">
-              CrewFind connects talented individuals with exciting opportunities. Join a platform that helps you network, find collaborators, and build incredible teams across industries.
+            <h1 className="text-4xl font-semibold text-gray-900 mb-4 hover:scale-105">Find Your Dream Crew</h1>
+            <p className="text-lg p-4 my-4 bg-white rounded-xl text-gray-700 hover:scale-105">
+            CrewFind connects talented individuals with exciting opportunities, making collaboration easier than ever. Whether you're a creative professional, a tech expert, or an entrepreneur, our platform helps you network, discover like-minded collaborators, and build incredible teams across various industries. Find the right people for your next big project and take your career to new heights with CrewFind.
             </p>
             
             <motion.div
@@ -123,8 +132,8 @@ const Home = () => {
               transition={{ duration: 0.5, delay: 0.5 }}
             >
               <div className='flex justify-center'>
-                <div onClick={() => navigate('/search')} className='bg-black hover:cursor-pointer text-xl hover:scale-110 mx-2 rounded-md text-white p-3'>Search</div>
-                <div onClick={() => navigate('/signin')} className='bg-yellow-400 hover:cursor-pointer text-xl hover:scale-110 mx-2 rounded-md text-black p-3'>Login</div>
+                <div onClick={() => navigate('/search')} className='bg-black hover:cursor-pointer text-lg hover:scale-110 mx-2 rounded-md text-white p-3'>Search</div>
+                <div onClick={() => navigate('/signin')} className='bg-yellow-400 hover:cursor-pointer text-lg hover:scale-110 mx-2 rounded-md text-black p-3'>Login</div>
               </div>
             </motion.div>
             
@@ -164,6 +173,11 @@ const Home = () => {
       <div ref={searchRef} id="search">
         <Dashboard/>
       </div>
+
+      <div ref={aboutRef} id="aboutUs">
+        <AboutUs/>
+      </div>
+      
 
       {/* Search Section */}
       {/* <div ref={searchRef} id="search">

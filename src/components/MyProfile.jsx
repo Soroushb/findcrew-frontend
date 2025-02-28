@@ -39,6 +39,7 @@ const MyProfile = () => {
   const [selfProfile, setSelfProfile] = useState(false);
   const { id } = useParams();
   const [requestNames, setRequestNames] = useState([]);
+  const [fullBio, setFullBio] = useState(false)
   const navigate = useNavigate()
 
   const filmIndustryRoles = [
@@ -434,7 +435,9 @@ const MyProfile = () => {
           
           {selfProfile && connectionRequestOpen && !connectionOpen && requestNames.length > 0 && (
           <div className='flex items-center justify-center'>
-          <div className='flex flex-col w-1/3 bg-gray-900 rounded-lg p-6'>
+          <div className='flex flex-col lg:w-1/3 bg-gray-900 rounded-lg p-6'>
+          <p className='pb-4 m-2 text-lg text-white'>Connections</p>
+
           {requestNames.map((request, index) => (
             <div className='flex justify-between'>
             <div className='flex w-full'>
@@ -457,11 +460,12 @@ const MyProfile = () => {
           </div>)}
           {selfProfile && connectionOpen && connectionNames.length > 0 && (
           <div className='flex items-center justify-center'>
-          <div className='flex flex-col w-1/3 bg-gray-900 rounded-lg p-6'>
+          <div className='flex flex-col lg:w-1/3 bg-gray-900 rounded-lg p-6'>
+          <p className='pb-4 m-2 text-lg text-white'>Connections</p>
           {connectionNames.map((connection, index) => (
-            <div onClick={() => navigate(`/profile/${connections[index]?.uid}`)} className='flex hover:cursor-pointer items-center'>
+            <div onClick={() => {setFullBio(false); navigate(`/profile/${connections[index]?.uid}`)}} className='flex hover:cursor-pointer items-center'>
             <img  src={connectionPics[index] ? connectionPics[index] : images?.profile} width={40} height={40} className={`${!connectionPics[index] ? 'invisible' : ''} rounded-full h-14 w-14 hover:scale-110 object-cover`}  alt=''/>
-            <div className='flex flex-col text-white hover:scale-110 text-lg p-4'>
+            <div className='flex flex-col text-white hover:scale-110 text-md p-4 my-2'>
             {connection}
             </div>
             </div>
@@ -528,7 +532,11 @@ const MyProfile = () => {
     </div>
   ) : (
     <div className="flex justify-between w-full p-6 items-center">
-      <h2 className="text-sm break-words w-full">{bio?.substring(0, 800) || 'No bio available.'}</h2>
+      <h2 className="text-sm break-words hidden md:hidden lg:flex w-full">{bio?.substring(0, 800) || 'No bio available.'}</h2>
+      {!fullBio && bio && (<h2 className="text-sm break-words lg:hidden w-full">{`${bio?.substring(0, 300)}...` || 'No bio available.'}<br/>
+      {bio ? (<span onClick={() => setFullBio(true)} className='text-blue-900'>Read Full Bio</span>) : ( <h2 className="text-sm break-words hidden md:hidden lg:flex w-full">No Bio Available</h2>)}
+      </h2>)}
+      {fullBio && bio.length > 0 && (<h2 className="text-sm break-words lg:hidden w-full">{bio?.substring(0, 800)}</h2>)}
       {selfProfile && (
         <button className="ml-4" onClick={() => setEditBio(true)}>
           <MdModeEdit className="scale-150" />

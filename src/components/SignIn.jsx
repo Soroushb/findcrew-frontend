@@ -33,7 +33,7 @@ function SignIn() {
       })
       .catch((error) => {
         // Handle login errors
-        setError(error.message); // Display error message
+        setError("Invalid Username/Password"); // Display error message
         console.error("Error logging in:", error.message);
       });
       

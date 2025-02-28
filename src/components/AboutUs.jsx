@@ -1,35 +1,54 @@
-import React from 'react'
-import images from '../constants/images'
-import { useNavigate } from 'react-router-dom'
+import React from 'react';
+import images from '../constants/images';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaLinkedin, FaGithub, FaGlobe  } from "react-icons/fa";
 
 const AboutUs = () => {
-
   const navigate = useNavigate();
+
   return (
-    <div className='flex flex-1 justify-center items-center  p-20 flex-col'>
-              <h1 className='text-2xl font-semibold mb-10'>About Us</h1>
-         <div className='flex items-center h-full'><img className='rounded-xl' src={images.set} width={700} alt="image"/></div>
+    <div className="flex flex-col items-center p-12">
+      <div className="flex lg:flex-row flex-col w-full max-w-6xl gap-10">
+        {/* Left Section: Text Content */}
+        <div className="flex flex-1 flex-col items-center lg:items-start justify-center">
+        <h1 className="text-3xl font-semibold my-4">About Us</h1>
 
-        <div className='flex w-full flex-col'>        <div className='p-10'>
-        At CrewFind, we are passionate about creating a platform that connects talented individuals with exciting opportunities, bridging the gap between creatives, professionals, and organizations. Born out of the realization that collaboration is key to achieving great things, CrewFind aims to revolutionize the way people network, find collaborators, and assemble teams for projects across a wide range of industries.
-Our Mission
 
-Our mission is to empower individuals and teams by providing a seamless, user-friendly platform that fosters connections, collaboration, and creativity. We strive to build a community where professionals and enthusiasts alike can come together to share their skills, ideas, and passions, creating something greater than the sum of its parts.
-What We Offer
-
-At CrewFind, we understand that finding the right people for a project can be challenging. Whether you’re a filmmaker in search of a cinematographer, a startup founder looking for a developer, or a musician seeking a producer, our app makes it easy to discover the right talent. Here’s how CrewFind stands out:
-
-    Personalized Search: Easily filter and search for collaborators based on specific skills, experience levels, and interests.
-    Comprehensive Profiles: View detailed profiles, including portfolios, past projects, and reviews, to ensure you find the perfect match.
-    Seamless Communication: Use our built-in messaging system to connect with others, discuss projects, and finalize details all in one place.
-    Diverse Categories: Whether you're working in tech, art, media, education, or any other field, CrewFind caters to a wide array of industries and skills.
-    User-Friendly Interface: Designed with simplicity and functionality in mind, our platform ensures a smooth experience for everyone.
-
+          <div className="flex flex-col text-gray-800 items-center text-md py-8">
+            At CrewFind, we are passionate about creating a platform that connects talented individuals with exciting opportunities, bridging the gap between creatives, professionals, and organizations. 
+            Our mission is to empower individuals and teams by providing a seamless, user-friendly platform that fosters connections, collaboration, and creativity.
+            <div 
+            onClick={() => navigate("/signup")} 
+            className="bg-black w-fit self-center text-white text-lg font-semibold px-6 py-3 rounded-md mt-6  cursor-pointer hover:scale-105 transition"
+            >
+            Create Account
+          </div>
+          </div>
         </div>
-        <div onClick={() => navigate("/signup")} className='bg-black w-fit rounded-md self-center hover:scale-110 hover:cursor-pointer p-2 text-white'>Create Account</div>
+
+        {/* Right Section: Images */}
+        <div className="flex flex-1 flex-col items-center lg:items-start justify-end">
+
+          <div className="flex flex-col items-center lg:items-start mt-8">
+            <h2 className="text-xl font-semibold">Created by:</h2>
+            <h2 className="text-lg">Soroush Bahrami</h2>
+            <div className='my-5 flex'>
+              <Link target="_blank" to="https://www.linkedin.com/in/soroush-bahrami/">
+              <div className='scale-150 m-2  hover:text-blue-800'><FaLinkedin/></div>
+              </Link>
+              <Link target="_blank" to="https://www.linkedin.com/in/soroush-bahrami/">
+              <div className='scale-150 m-2 hover:text-green-900'><FaGithub/></div>
+              </Link>
+              <Link target="_blank" to="https://www.linkedin.com/in/soroush-bahrami/">
+              <div className='scale-150 m-2 hover:text-orange-800'><FaGlobe/></div>
+              </Link>
+            </div>
+            <img className="rounded-full w-24 h-24 object-cover hover:scale-110 transition" src={images.me} alt="Me" />
+          </div>
         </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default AboutUs
+export default AboutUs;

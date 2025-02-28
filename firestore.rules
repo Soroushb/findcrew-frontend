@@ -12,7 +12,7 @@ service cloud.firestore {
       allow read;
     }
 
-     match /users/{userId}/connectionRequests/{requestId} {
+    match /users/{userId}/connectionRequests/{requestId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
@@ -20,6 +20,15 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
+    // Chat rules
+    match /chats/{chatId} {
+      allow read, write: if request.auth != null && request.auth.uid in resource.data.participants;
+
+      // Messages inside the chat
+      match /messages/{messageId} {
+        allow read, write: if request.auth != null && request.auth.uid in resource.data.participants;
+      }
+    }
 
     // Restrict write access to authenticated users only
     match /{document=**} {

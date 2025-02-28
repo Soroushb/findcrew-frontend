@@ -74,6 +74,7 @@ const Navbar = () => {
             >
               <div  onClick={() => {setMenuOpen(false); navigate("/")}}  className="block text-lg hover:text-yellow-400 transition-colors">Home</div>
               <div onClick={() => {setMenuOpen(false); navigate("/search")}} className="block text-lg hover:text-yellow-400 transition-colors">Search</div>
+              <div onClick={() => {setMenuOpen(false); navigate("/about-us")}}  className="block text-lg hover:text-yellow-400 transition-colors">About Us</div>
               {!user ? (
                 <>
                   <div onClick={() => {setMenuOpen(false); navigate("/signin")}}  className="block text-lg hover:text-yellow-400 transition-colors">Login</div>

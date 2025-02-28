@@ -111,7 +111,7 @@ const Search = () => {
   return (
     <div className="flex bg-slate-900 flex-col p-10 min-h-screen">
       <div className="flex justify-center ">
-        <h1 className="lg:text-3xl text-xl text-white p-8">Search for a Role</h1>
+        <h1 className="lg:text-3xl text-xl lg:mb-2 text-white p-8">Search for a Role</h1>
       </div>
       <motion.div
         initial={{ opacity: 0, y: -50 }}
